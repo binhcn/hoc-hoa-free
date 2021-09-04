@@ -51,9 +51,9 @@
             </div>
 
             <div class="p-4 sm:w-66 flex justify-center items-center">
-                    <img class="pl-4" src="../assets/logo1.png" style="width: 130px; height: 80px"/>
+                    <img class="pl-4 logo" src="../assets/logo1.png" style="width: 130px; height: 80px"/>
                     <div class="pl-2 flex flex-col justify-center items-center">
-                        <div class="font-bold text-lg">HỌC HÓA FREE</div>
+                        <div class="font-bold text-md lg:text-lg">HỌC HÓA FREE</div>
                      <!-- slogan -->
                     <span class="slogan text-xs">Học mọi nơi - Hỏi mọi lúc</span>
                 </div>
@@ -61,7 +61,7 @@
 
             <!--  category -->
             <div class="flex justify-center items-center">
-                <button @click="() => showTopic(cate.categoryId)" v-for="(cate, idx) in listShow" :key="idx" class="border rounded-md px-4 py-2 border-yellow-500 text-lg mr-6">{{ cate.title }}</button>
+                <button @click="() => showTopic(cate.categoryId)" v-for="(cate, idx) in listShow" :key="idx" class="border rounded-md px-4 py-2 border-yellow-500 text-sm lg:text-lg mr-6">{{ cate.title }}</button>
             </div>
 
             <!-- search bar -->
@@ -122,10 +122,10 @@
 
                 <!-- Extract: menu_items -->
                 <div class="mt-4">
-                    <a v-for="(topic,idx) in listTopic" :key="idx" href="#" class="px-10 py-2 flex justify-between items-start text-sm text-gray-100 hover:text-orange-500 sm:px-4 sm:text-base">
+                    <a  v-for="(topic,idx) in listTopic" :key="idx" href="#" class="px-10 py-2 flex justify-between items-start text-sm text-gray-100 hover:text-orange-500 sm:px-4 sm:text-base" >
                         <div style="white-space: pre-wrap; word-break: break-word" class="flex justify-center items-start ">
                             <span><i class="fa fa-splotch text-gray-300 text-xs"></i></span>
-                        <div  class="ml-2 mt-1 text-left text-xs" :v-html="topic.title">{{topic.title}}</div>
+                        <div class="ml-2 mt-1 text-left text-xs" :v-html="topic.title">{{topic.title}}</div>
                         </div>
                         
 
@@ -166,6 +166,7 @@ export default {
       isNotificationsOpen: false,
       isMenuOpen: false,
       selectedClass: '',
+      clikedTopic: false,
       listTopic: [],
       listShow: [
         {
@@ -258,7 +259,6 @@ export default {
   }},
   methods: {
         showSelectedClass(id) {
-            console.log(id)
             let idx = this.listShow.findIndex(cat => cat.categoryId === id)
             if(idx != -1) this.selectedClass =  this.listShow[idx].title
         },
@@ -278,7 +278,6 @@ export default {
   },
   mounted() {
       this.showSelectedClass(11)
-      console.log(this.selectedClass)
         this.listTopic = this.listShow[0].topics
   },
   watch: {
@@ -320,5 +319,16 @@ export default {
   .notification {
     display: none;
   }
+}
+
+
+@media only screen and (max-width: 992px) {
+  .logo {
+    display: none;
+  }
+}
+
+.highlight {
+    color: orange;
 }
 </style>
