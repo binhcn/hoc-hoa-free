@@ -114,7 +114,7 @@
                         </svg>
                     </div>
                     <div class="ml-4 flex-1 flex flex-col sm:mt-4 sm:ml-0 sm:items-center">
-                        <div class="text-yellow-500 text-xl sm:text-sm">
+                        <div class="text-yellow-500 text-xl font-bold sm:text-sm">
                             {{ selectedClass }}
                         </div>
                     </div>
