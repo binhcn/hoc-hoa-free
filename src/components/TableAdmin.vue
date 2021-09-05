@@ -10,9 +10,10 @@
  <!-- Categories -->
       <div class="dropdown">
         <button
-          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center"
+          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
+          style="width: 160px;"
         >
-          <span class="mr-1">Chọn cấp bậc</span>
+          <span class="mr-1">{{ selectedCate }}</span>
           <svg
             class="fill-current h-4 w-8"
             xmlns="http://www.w3.org/2000/svg"
@@ -24,11 +25,12 @@
           </svg>
         </button>
         <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
-          <li class="">
+          <li v-for="(cate, idx) in listShow" :key="idx" class="">
             <a
-              class="w-44 rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+              @click="selectCate(cate.categoryId)"
+              class="w-44 text-blue-700 rounded-t bg-gray-200 hover:bg-gray-700 hover:text-yellow-500 py-2 px-4 block whitespace-no-wrap"
               href="#"
-              >One</a
+              >{{ cate.title }}</a
             >
           </li>
         </ul>
@@ -36,9 +38,10 @@
       <!-- Topics by Categories -->
       <div class="dropdown ml-8">
         <button
-          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center"
+          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
+          style="width: 200px;"
         >
-          <span class="mr-1">Chọn chủ đề</span>
+          <span class="mr-1 w-44" style="width: 150px">{{ selectedTopic.length > 15 ? selectedTopic.substring(0,16)+ '...' : selectedTopic }}</span>
           <svg
             class="fill-current h-4 w-8"
             xmlns="http://www.w3.org/2000/svg"
@@ -50,13 +53,13 @@
           </svg>
         </button>
         <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
-          <li class="">
+          <li class="" v-for="(topic, idx) in lisTopic" :key="idx">
             <a
+              @click="selectTopic(topic.topicId)"
               style="white-space: pre-wrap; word-break: break-word"
               class="w-44 rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
               href="#"
-              >Three is the magic
-              numbeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaar</a
+              >{{ topic.title }}</a
             >
           </li>
         </ul>
@@ -64,14 +67,12 @@
 
       <!-- search -->
       <button
+          @click="filterExam()"
           class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded items-center ml-8"
         >Tìm kiếm</button>
         </div>
         <!-- add more -->
      <div>
-         <!-- <button
-          class="btn-admin bg-red-600 text-gray-50 font-semibold py-2 px-4 rounded items-center ml-8"
-        >Thêm bài tập</button> -->
         
         <div class="flex items-center justify-center h-full">
   <button class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700" @click="() => showModal()">Thêm bài tập</button>
@@ -111,8 +112,6 @@
             <th className="text-left w-16">STT</th>
             <th className="text-left">Bài tập</th>
             <th className="text-left w-40">Lời giải</th>
-            <th className="text-left w-28">Cấp bậc</th>
-            <th className="text-left w-40">Chủ đề</th>
             <th className="text-left w-20">Hành động</th>
           </tr>
         </thead>
@@ -132,12 +131,8 @@
                 alt="..."
               />
             </td>
-            <td className="text-left">THPT</td>
-
-            <td className="text-left">Bài tập tổng hợp</td>
             <td className="text-left">
               <div className="flex justify-center items-center">
-                <!-- <button className="mx-4 action-btn"><i class="fa fa-edit"></i></button> -->
                 <button className=" action-btn">
                   <i class="fa fa-trash"></i>
                 </button>
@@ -153,10 +148,122 @@
 export default {
     data() {
     return {
+      selectedCate: 'Chọn cấp bậc',
+      selectedTopic: 'Chọn chủ đề',
       visible: false,
+      selectedInfo: {
+        cateId: 0,
+        topicId: 0,
+      },
+      lisTopic: [],
+      listShow: [
+        {
+            categoryId: 11,
+            title: "LỚP 11",
+            topics: [
+                {
+                    topicId: 1,
+                    title: "Este - Lipit"
+                },
+                {
+                    topicId: 2,
+                    title: "Cacbohidrat"
+                },
+                {
+                    topicId: 3,
+                    title: "Amin - Aminoaxit - Protein"
+                },
+                {
+                    topicId: 4,
+                    title: "Polime - Vật liệu Polime"
+                },
+                {
+                    topicId: 5,
+                    title: "Đại cương về kim loại"
+                },
+                {
+                    topicId: 6,
+                    title: "Polime - Vật liệu Polime"
+                },
+                {
+                    topicId: 7,
+                    title: "Polime - Vật liệu Polime"
+                }
+            ]
+        },
+        {
+            categoryId: 12,
+            title: "LỚP 12",
+            topics: [
+                {
+                    topicId: 1,
+                    title: "Phản ứng oxi hóa khử"
+                },
+                {
+                    topicId: 2,
+                    title: "Nhóm halogen"
+                },
+                {
+                    topicId: 3,
+                    title: "Oxi - Lưu huỳnh"
+                }
+            ]
+        },
+        {
+            categoryId: 13,
+            title: "THPT",
+            topics: [
+                {
+                    topicId: 1,
+                    title: "Đề thi thử 1"
+                },
+                {
+                    topicId: 2,
+                    title: "Đề thi thử 2"
+                },
+                {
+                    topicId: 3,
+                    title: "Đề thi thử 3"
+                },
+                {
+                    topicId: 4,
+                    title: "Đề thi thử 4"
+                },
+                {
+                    topicId: 5,
+                    title: "Đề thi thử 5"
+                },
+                {
+                    topicId: 6,
+                    title: "Đề thi thử 6"
+                },
+                {
+                    topicId: 7,
+                    title: "Đề thi thử 7"
+                }
+            ]
+        },
+      ],
     };
   },
+  mounted() {
+    this.lisTopic = this.listShow[0].topics
+  },
   methods: {
+    filterExam() {
+      console.log(this.selectedInfo)
+    },
+    selectTopic(topicId) {
+      this.selectedInfo.topicId = topicId
+      let idx = this.lisTopic.findIndex(topic => topic.topicId == topicId)
+      if(idx != -1) this.selectedTopic = this.lisTopic[idx].title
+    },
+    selectCate(cateId) {
+      let idx = this.listShow.findIndex(cate => cate.categoryId == cateId)
+      if(idx != -1) this.lisTopic = this.listShow[idx].topics
+      this.selectedInfo.cateId = cateId
+      this.selectedCate = this.listShow[idx].title
+    },
     showModal() {
         this.visible = true
         console.log(this.visible)
