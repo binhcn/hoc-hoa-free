@@ -1,1 +1,13 @@
-
+spring:
+  application:
+    name: hoc-hoa-free
+  datasource:
+    url: jdbc:mysql://localhost:3306/hoc_hoa_free
+    username: root
+    password: binhcaong
+    driverClassName: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+  web:
+    resources:
+      static-locations: file:images
