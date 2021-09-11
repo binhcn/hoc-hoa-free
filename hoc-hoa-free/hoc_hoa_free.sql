@@ -1,3 +1,6 @@
+Link postman
+https://www.getpostman.com/collections/cef9fc0cd67f1159ecef
+
 CREATE TABLE hoc_hoa_free.`category` (
     `id` int NOT NULL AUTO_INCREMENT,
     `title` varchar(45) NOT NULL,
