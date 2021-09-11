@@ -1,26 +1,27 @@
 package dev.binhcn.controller;
 
-import dev.binhcn.constant.Constant;
+import dev.binhcn.dto.ExerciseHoaHocFreeResponse;
+import dev.binhcn.dto.ExerciseListResponse;
+import dev.binhcn.statics.Constant;
 import dev.binhcn.dto.CategoryAndTopic;
+import dev.binhcn.dto.CategoryAndTopicResponse;
 import dev.binhcn.model.Category;
 import dev.binhcn.model.Exercise;
-import dev.binhcn.model.ExerciseId;
 import dev.binhcn.model.Topic;
 import dev.binhcn.repository.CategoryRepository;
 import dev.binhcn.repository.ExerciseRepository;
 import dev.binhcn.repository.TopicRepository;
+import dev.binhcn.util.ExerciseUtil;
 import dev.binhcn.util.FileUtil;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,11 +36,11 @@ public class Controller {
   private final TopicRepository topicRepository;
   private final ExerciseRepository exerciseRepository;
 
-  @GetMapping("/topics")
+  @GetMapping("/structure")
   public ResponseEntity getCategoryAndTopic() {
     List<Category> categoryList = categoryRepository.findAll();
     List<Topic> topicList = topicRepository.findAll();
-    List<CategoryAndTopic> response = new ArrayList<>();
+    List<CategoryAndTopic> categoryAndTopicList = new ArrayList<>();
 
     for (int i = 0; i < categoryList.size(); i++) {
       List<Topic> selectedTopicList = new ArrayList<>();
@@ -53,27 +54,62 @@ public class Controller {
       item.setCategoryId(categoryList.get(i).getId());
       item.setTitle(categoryList.get(i).getTitle());
       item.setTopicList(selectedTopicList);
-      response.add(item);
+      categoryAndTopicList.add(item);
     }
+    CategoryAndTopicResponse response = new CategoryAndTopicResponse(categoryAndTopicList);
     return ResponseEntity.ok().body(response);
   }
 
   @PostMapping("/exercises")
-  public ResponseEntity saveUser(int topicId, String question,
+  public ResponseEntity saveExercise(int topicId, String question,
       @RequestParam("solutionImage") MultipartFile multipartFile) {
-    String solutionImageName = multipartFile.getOriginalFilename();
+    String solutionImage = multipartFile.getOriginalFilename();
     Exercise exercise = new Exercise();
-//    exercise.setExerciseId(new ExerciseId(1, topicId));
-    exercise.setId(1);
     exercise.setQuestion(question);
     exercise.setTopicId(topicId);
-    exercise.setSolutionImage(solutionImageName);
+    exercise.setSolutionImage(solutionImage);
     exercise.setCreatedAt(System.currentTimeMillis());
     Exercise response = exerciseRepository.save(exercise);
 
-    String fileName = StringUtils.cleanPath(solutionImageName);
-    String uploadDir = Constant.IMAGE_DIR + Constant.SEPARATE;
-    FileUtil.saveFile(uploadDir, fileName, multipartFile);
+    String fileName = StringUtils.cleanPath(solutionImage);
+    FileUtil.saveFile(Constant.IMAGE_DIR, fileName, multipartFile);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @GetMapping("/exercises")
+  public ResponseEntity getExercises(
+      @RequestParam(value = "topicId", required = false) String topicIdString,
+      @RequestParam(value = "text", required = false) String text,
+      @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    int offset = pageSize * (currentPage - 1);
+    List<Exercise> exerciseList;
+    long total;
+    if (topicIdString.isEmpty()) {
+      exerciseList = exerciseRepository.findAll(pageSize, offset);
+      total = exerciseRepository.count();
+    } else {
+      int topicId = Integer.parseInt(topicIdString);
+      exerciseList = exerciseRepository.findByTopicId(topicId, pageSize, offset);
+      total = exerciseRepository.countByTopicId(topicId);
+    }
+    int lastPage = -1;
+    if (pageSize > 0) {
+      lastPage = (int)Math.ceil((float)total / pageSize);
+    }
+    ExerciseListResponse response = new ExerciseListResponse();
+    response.setTotal(total);
+    response.setCurrentPage(currentPage);
+    response.setLastPage(lastPage);
+    response.setPageSize(pageSize);
+    response.setExerciseList(ExerciseUtil.parseDetailsList(exerciseList));
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/exercises/{id}")
+  public ResponseEntity getExercises(@PathVariable("id") long id) {
+    Exercise exercise = exerciseRepository.findById(id);
+    ExerciseHoaHocFreeResponse response = ExerciseUtil.parseDetails(exercise);
     return ResponseEntity.ok(response);
   }
 }
