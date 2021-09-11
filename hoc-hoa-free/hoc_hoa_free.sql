@@ -42,4 +42,5 @@ INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('3', '
 INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('4', 'Peptit', '2');
 INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('5', 'Kim loại', '2');
 INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('6', 'Hidrocacbon thơm', '1');
+INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('7', 'Năm 2021', '3');
 INSERT INTO `hoc_hoa_free`.`topic` (`id`, `title`, `category_id`) VALUES ('8', 'Năm 2020', '3');
