@@ -283,7 +283,7 @@ export default {
         async getData() {
             try {
                 let data = await axios({
-                    url: 'localhost:8000/structure',
+                    url: 'http://localhost:8000/structure',
                     method: 'GET'
                 })
                 console.log("data structure", data)
