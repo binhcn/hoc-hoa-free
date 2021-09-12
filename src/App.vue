@@ -2,6 +2,7 @@
   <div id="nav">
     <router-link to="/"></router-link>
     <router-link to="/admin"></router-link>
+    <router-link to="/editor"></router-link>
   </div>
   <router-view/>
 </template>

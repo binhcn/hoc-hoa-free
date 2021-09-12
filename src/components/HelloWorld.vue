@@ -156,6 +156,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
   name: 'Home',
@@ -163,6 +164,7 @@ export default {
   },
   data() {
     return {
+      exercises: [],
       isNotificationsOpen: false,
       isMenuOpen: false,
       selectedClass: '',
@@ -257,6 +259,9 @@ export default {
         },
       ],
   }},
+//   created() {
+      
+//   },
   methods: {
         showSelectedClass(id) {
             let idx = this.listShow.findIndex(cat => cat.categoryId === id)
@@ -274,11 +279,40 @@ export default {
         toggleMenu() {
             this.$refs.menu.scrollTo(0, 0)
             this.isMenuOpen = !this.isMenuOpen;
-        }
+        },
+        async getData() {
+            try {
+                let data = await axios({
+                    url: 'localhost:8000/structure',
+                    method: 'GET'
+                })
+                console.log("data structure", data)
+                if(data && data.structure) {
+                    this.listShow = data.structure
+                }
+            } catch(err) {
+                console.log("failed roi", err)
+            }
+        },
+        // async getExercises(cateId, topicId) {
+        //     try {
+        //         let exercises = await axios({
+        //         url: `${cateId}/${topicId}`,
+        //         method: 'GET'
+        //         })
+        //         if(exercises) {
+        //             this.exercises = exercises
+        //         }
+        //     } catch(err) {
+        //         console.log(err)
+        //     }
+        // }
   },
   mounted() {
+    //   this.getExercises(11, 1)
       this.showSelectedClass(11)
         this.listTopic = this.listShow[0].topicList
+        this.getData()
   },
   watch: {
         isNotificationsOpen: function(isOpen) {

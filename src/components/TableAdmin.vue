@@ -39,7 +39,7 @@
       <div class="dropdown ml-8">
         <button
           class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
-          style="width: 200px;"
+          style="width: 175px;"
         >
           <span class="mr-1 w-44" style="width: 150px">{{ selectedTopic.length > 15 ? selectedTopic.substring(0,16)+ '...' : selectedTopic }}</span>
           <svg
@@ -75,7 +75,7 @@
      <div>
         
         <div class="flex items-center justify-center h-full">
-  <button class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700" @click="() => showModal()">Thêm bài tập</button>
+  <button class="add-more py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700" @click="() => showModal()">Thêm bài tập</button>
 </div>
 <div v-if="visible" class="fixed z-10 overflow-y-auto top-0 w-full left-0" id="modal">
   <div class="flex items-center justify-center min-height-100vh pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -85,15 +85,12 @@
     <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
     <div class="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
       <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <label>Name</label>
-        <input type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3" />
-        <label>Url</label>
-        <input type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3" />
+        <Editor />
       </div>
       <div class="bg-gray-200 px-4 py-3 text-right">
         
-        <button type="button" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i class="pr-2 fas fa-plus"></i>Đăng</button>
-        <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2" @click="closeModal()"><i class="pr-2 fas fa-times"></i>Hủy</button>
+        <button type="button" class="btn-dang py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i class="pr-2 fas fa-plus"></i>Đăng</button>
+        <button type="button" class="btn-remove py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2" @click="closeModal()"><i class="pr-2 fas fa-times"></i>Hủy</button>
       </div>
     </div>
   </div>
@@ -145,7 +142,12 @@
   </div>
 </template>
 <script>
+import Editor from './TextEditor.vue'
+
 export default {
+  components: {
+    Editor
+  },
     data() {
     return {
       selectedCate: 'Chọn cấp bậc',
@@ -363,5 +365,14 @@ table > tbody > tr > td {
 }
 #app > div:nth-child(2) > div > div > div.admin-course > table > tbody > tr > td:nth-child(2) {
     text-align: left;
+}
+.add-more:focus {
+  outline: none;
+}
+.btn-dang {
+  outline: none;
+}
+.btn-remove {
+  outline: none;
 }
 </style>

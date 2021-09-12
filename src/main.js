@@ -2,7 +2,12 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import 'ant-design-vue/dist/antd.css'; 
-// import Antd from 'ant-design-vue';
-// Vue.use(Antd);
+import {Button, Modal} from 'ant-design-vue'
 
-createApp(App).use(router).mount('#app')
+
+const app = createApp(App).use(router);
+app.config.productionTip = false;
+app.use(Button);
+app.use(Modal);
+app.use(router);
+app.mount('#app');
