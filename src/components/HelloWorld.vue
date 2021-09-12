@@ -172,33 +172,33 @@ export default {
         {
             categoryId: 11,
             title: "LỚP 11",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Este - Lipit"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Cacbohidrat"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Amin - Aminoaxit - Protein"
                 },
                 {
-                    topicId: 4,
+                    id: 4,
                     title: "Polime - Vật liệu Polime"
                 },
                 {
-                    topicId: 5,
+                    id: 5,
                     title: "Đại cương về kim loại"
                 },
                 {
-                    topicId: 6,
+                    id: 6,
                     title: "Polime - Vật liệu Polime"
                 },
                 {
-                    topicId: 7,
+                    id: 7,
                     title: "Polime - Vật liệu Polime"
                 }
             ]
@@ -206,17 +206,17 @@ export default {
         {
             categoryId: 12,
             title: "LỚP 12",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Phản ứng oxi hóa khử"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Nhóm halogen"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Oxi - Lưu huỳnh"
                 }
             ]
@@ -224,33 +224,33 @@ export default {
         {
             categoryId: 13,
             title: "THPT",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Đề thi thử 1"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Đề thi thử 2"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Đề thi thử 3"
                 },
                 {
-                    topicId: 4,
+                    id: 4,
                     title: "Đề thi thử 4"
                 },
                 {
-                    topicId: 5,
+                    id: 5,
                     title: "Đề thi thử 5"
                 },
                 {
-                    topicId: 6,
+                    id: 6,
                     title: "Đề thi thử 6"
                 },
                 {
-                    topicId: 7,
+                    id: 7,
                     title: "Đề thi thử 7"
                 }
             ]
@@ -264,7 +264,7 @@ export default {
         },
         showTopic(cateId) {
             let idx = this.listShow.findIndex(cat => cat.categoryId === cateId)
-            this.listTopic = this.listShow[idx].topics
+            this.listTopic = this.listShow[idx].topicList
             this.showSelectedClass(cateId)
         },
         toggleNotifications() {
@@ -278,7 +278,7 @@ export default {
   },
   mounted() {
       this.showSelectedClass(11)
-        this.listTopic = this.listShow[0].topics
+        this.listTopic = this.listShow[0].topicList
   },
   watch: {
         isNotificationsOpen: function(isOpen) {

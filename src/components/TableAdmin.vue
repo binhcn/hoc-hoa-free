@@ -55,7 +55,7 @@
         <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
           <li class="" v-for="(topic, idx) in lisTopic" :key="idx">
             <a
-              @click="selectTopic(topic.topicId)"
+              @click="selectTopic(topic.id)"
               style="white-space: pre-wrap; word-break: break-word"
               class="w-44 rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
               href="#"
@@ -160,33 +160,33 @@ export default {
         {
             categoryId: 11,
             title: "LỚP 11",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Este - Lipit"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Cacbohidrat"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Amin - Aminoaxit - Protein"
                 },
                 {
-                    topicId: 4,
+                    id: 4,
                     title: "Polime - Vật liệu Polime"
                 },
                 {
-                    topicId: 5,
+                    id: 5,
                     title: "Đại cương về kim loại"
                 },
                 {
-                    topicId: 6,
+                    id: 6,
                     title: "Polime - Vật liệu Polime"
                 },
                 {
-                    topicId: 7,
+                    id: 7,
                     title: "Polime - Vật liệu Polime"
                 }
             ]
@@ -194,17 +194,17 @@ export default {
         {
             categoryId: 12,
             title: "LỚP 12",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Phản ứng oxi hóa khử"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Nhóm halogen"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Oxi - Lưu huỳnh"
                 }
             ]
@@ -212,33 +212,33 @@ export default {
         {
             categoryId: 13,
             title: "THPT",
-            topics: [
+            topicList: [
                 {
-                    topicId: 1,
+                    id: 1,
                     title: "Đề thi thử 1"
                 },
                 {
-                    topicId: 2,
+                    id: 2,
                     title: "Đề thi thử 2"
                 },
                 {
-                    topicId: 3,
+                    id: 3,
                     title: "Đề thi thử 3"
                 },
                 {
-                    topicId: 4,
+                    id: 4,
                     title: "Đề thi thử 4"
                 },
                 {
-                    topicId: 5,
+                    id: 5,
                     title: "Đề thi thử 5"
                 },
                 {
-                    topicId: 6,
+                    id: 6,
                     title: "Đề thi thử 6"
                 },
                 {
-                    topicId: 7,
+                    id: 7,
                     title: "Đề thi thử 7"
                 }
             ]
@@ -247,7 +247,7 @@ export default {
     };
   },
   mounted() {
-    this.lisTopic = this.listShow[0].topics
+    this.lisTopic = this.listShow[0].topicList
   },
   methods: {
     filterExam() {
@@ -255,12 +255,12 @@ export default {
     },
     selectTopic(topicId) {
       this.selectedInfo.topicId = topicId
-      let idx = this.lisTopic.findIndex(topic => topic.topicId == topicId)
+      let idx = this.lisTopic.findIndex(topic => topic.id == topicId)
       if(idx != -1) this.selectedTopic = this.lisTopic[idx].title
     },
     selectCate(cateId) {
       let idx = this.listShow.findIndex(cate => cate.categoryId == cateId)
-      if(idx != -1) this.lisTopic = this.listShow[idx].topics
+      if(idx != -1) this.lisTopic = this.listShow[idx].topicList
       this.selectedInfo.cateId = cateId
       this.selectedCate = this.listShow[idx].title
     },
