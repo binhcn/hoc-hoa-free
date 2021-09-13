@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../components/HelloWorld.vue'
 import Admin from '../components/Admin.vue'
-import QuillEditor from '../components/Editor.vue'
+import Editor from '../components/Editor.vue'
 
 const routes = [
   {
@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/editor',
     name: 'Editor',
-    component: QuillEditor
+    component: Editor
   }
 ]
 

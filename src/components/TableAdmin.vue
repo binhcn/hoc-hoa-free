@@ -6,100 +6,139 @@
     </div>
 
     <div class="mb-4 flex justify-between items-center">
-        <div class="flex">
- <!-- Categories -->
-      <div class="dropdown">
-        <button
-          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
-          style="width: 160px;"
-        >
-          <span class="mr-1">{{ selectedCate }}</span>
-          <svg
-            class="fill-current h-4 w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
+      <div class="flex">
+        <!-- Categories -->
+        <div class="dropdown">
+          <button
+            class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
+            style="width: 160px;"
           >
-            <path
-              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-            />
-          </svg>
-        </button>
-        <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
-          <li v-for="(cate, idx) in listShow" :key="idx" class="">
-            <a
-              @click="selectCate(cate.categoryId)"
-              class="w-44 text-blue-700 rounded-t bg-gray-200 hover:bg-gray-700 hover:text-yellow-500 py-2 px-4 block whitespace-no-wrap"
-              href="#"
-              >{{ cate.title }}</a
+            <span class="mr-1">{{ selectedCate }}</span>
+            <svg
+              class="fill-current h-4 w-8"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
             >
-          </li>
-        </ul>
-      </div>
-      <!-- Topics by Categories -->
-      <div class="dropdown ml-8">
-        <button
-          class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
-          style="width: 175px;"
-        >
-          <span class="mr-1 w-44" style="width: 150px">{{ selectedTopic.length > 15 ? selectedTopic.substring(0,16)+ '...' : selectedTopic }}</span>
-          <svg
-            class="fill-current h-4 w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </button>
+          <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
+            <li v-for="(cate, idx) in listShow" :key="idx" class="">
+              <a
+                @click="selectCate(cate.categoryId)"
+                class="w-44 text-blue-700 rounded-t bg-gray-200 hover:bg-gray-700 hover:text-yellow-500 py-2 px-4 block whitespace-no-wrap"
+                href="#"
+                >{{ cate.title }}</a
+              >
+            </li>
+          </ul>
+        </div>
+        <!-- Topics by Categories -->
+        <div class="dropdown ml-8">
+          <button
+            class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
+            style="width: 175px;"
           >
-            <path
-              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-            />
-          </svg>
-        </button>
-        <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
-          <li class="" v-for="(topic, idx) in lisTopic" :key="idx">
-            <a
-              @click="selectTopic(topic.id)"
-              style="white-space: pre-wrap; word-break: break-word"
-              class="w-44 rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-              href="#"
-              >{{ topic.title }}</a
+            <span class="mr-1 w-44" style="width: 150px">{{
+              selectedTopic.length > 15
+                ? selectedTopic.substring(0, 16) + "..."
+                : selectedTopic
+            }}</span>
+            <svg
+              class="fill-current h-4 w-8"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
             >
-          </li>
-        </ul>
-      </div>
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </button>
+          <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
+            <li class="" v-for="(topic, idx) in lisTopic" :key="idx">
+              <a
+                @click="selectTopic(topic.id)"
+                style="white-space: pre-wrap; word-break: break-word"
+                class="w-44 rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+                href="#"
+                >{{ topic.title }}
+              </a>
+            </li>
+          </ul>
+        </div>
 
-      <!-- search -->
-      <button
+        <!-- search -->
+        <button
           @click="filterExam()"
           class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded items-center ml-8"
-        >Tìm kiếm</button>
-        </div>
-        <!-- add more -->
-     <div>
-        
+        >
+          Tìm kiếm
+        </button>
+      </div>
+      <!-- add more -->
+      <div>
         <div class="flex items-center justify-center h-full">
-  <button class="add-more py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700" @click="() => showModal()">Thêm bài tập</button>
-</div>
-<div v-if="visible" class="fixed z-10 overflow-y-auto top-0 w-full left-0" id="modal">
-  <div class="flex items-center justify-center min-height-100vh pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-    <div class="fixed inset-0 transition-opacity">
-      <div class="absolute inset-0 bg-gray-900 opacity-75" />
-    </div>
-    <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-    <div class="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <Editor />
+          <button
+            class="add-more py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+            @click="() => showModal()"
+          >
+            Thêm bài tập
+          </button>
+        </div>
+        <div
+          v-if="visible"
+          class="fixed z-10 overflow-y-auto top-0 w-full left-0"
+          id="modal"
+        >
+          <div
+            class="flex items-center justify-center min-height-100vh pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+          >
+            <div class="fixed inset-0 transition-opacity">
+              <div class="absolute inset-0 bg-gray-900 opacity-75" />
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+              >&#8203;</span
+            >
+            <div
+              class="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div>
+                  <label>Nhập câu hỏi</label>
+                <!-- <QuillEditor /> -->
+                </div>
+                
+                <div class="mt-4">
+                  <label >Tải lời giải</label><br />
+                <input type="file" id="myFile" name="filename" />
+                </div>
+                
+              </div>
+              <div class="bg-gray-200 px-4 py-3 text-right">
+                <button
+                  type="button"
+                  class="btn-dang py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
+                >
+                  <i class="pr-2 fas fa-plus"></i>Đăng
+                </button>
+                <button
+                  type="button"
+                  class="btn-remove py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
+                  @click="closeModal()"
+                >
+                  <i class="pr-2 fas fa-times"></i>Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-200 px-4 py-3 text-right">
-        
-        <button type="button" class="btn-dang py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i class="pr-2 fas fa-plus"></i>Đăng</button>
-        <button type="button" class="btn-remove py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2" @click="closeModal()"><i class="pr-2 fas fa-times"></i>Hủy</button>
-      </div>
     </div>
-  </div>
-</div>
-
-     </div>
-
-    </div>
-
 
     <!-- TABLE LIST -->
     <div className="admin-course">
@@ -123,10 +162,7 @@
               là 6,8. Phần trăm khối lượng nguyên tố oxi trong X là
             </td>
             <td className="">
-              <img
-                src="https://picsum.photos/50/50"
-                alt="..."
-              />
+              <img src="https://picsum.photos/50/50" alt="..." />
             </td>
             <td className="text-left">
               <div className="flex justify-center items-center">
@@ -142,16 +178,18 @@
   </div>
 </template>
 <script>
-import Editor from './TextEditor.vue'
+// import QuillEditor from './Editor.vue'
+import axios from 'axios'
 
 export default {
   components: {
-    Editor
+    // QuillEditor,
   },
-    data() {
+  data() {
     return {
-      selectedCate: 'Chọn cấp bậc',
-      selectedTopic: 'Chọn chủ đề',
+      
+      selectedCate: "Chọn cấp bậc",
+      selectedTopic: "Chọn chủ đề",
       visible: false,
       selectedInfo: {
         cateId: 0,
@@ -160,119 +198,153 @@ export default {
       lisTopic: [],
       listShow: [
         {
-            categoryId: 11,
-            title: "LỚP 11",
-            topicList: [
-                {
-                    id: 1,
-                    title: "Este - Lipit"
-                },
-                {
-                    id: 2,
-                    title: "Cacbohidrat"
-                },
-                {
-                    id: 3,
-                    title: "Amin - Aminoaxit - Protein"
-                },
-                {
-                    id: 4,
-                    title: "Polime - Vật liệu Polime"
-                },
-                {
-                    id: 5,
-                    title: "Đại cương về kim loại"
-                },
-                {
-                    id: 6,
-                    title: "Polime - Vật liệu Polime"
-                },
-                {
-                    id: 7,
-                    title: "Polime - Vật liệu Polime"
-                }
-            ]
+          categoryId: 11,
+          title: "LỚP 11",
+          topics: [
+            {
+              topicId: 1,
+              title: "Este - Lipit",
+            },
+            {
+              topicId: 2,
+              title: "Cacbohidrat",
+            },
+            {
+              topicId: 3,
+              title: "Amin - Aminoaxit - Protein",
+            },
+            {
+              topicId: 4,
+              title: "Polime - Vật liệu Polime",
+            },
+            {
+              topicId: 5,
+              title: "Đại cương về kim loại",
+            },
+            {
+              topicId: 6,
+              title: "Polime - Vật liệu Polime",
+            },
+            {
+              topicId: 7,
+              title: "Polime - Vật liệu Polime",
+            },
+          ],
         },
         {
-            categoryId: 12,
-            title: "LỚP 12",
-            topicList: [
-                {
-                    id: 1,
-                    title: "Phản ứng oxi hóa khử"
-                },
-                {
-                    id: 2,
-                    title: "Nhóm halogen"
-                },
-                {
-                    id: 3,
-                    title: "Oxi - Lưu huỳnh"
-                }
-            ]
+          categoryId: 12,
+          title: "LỚP 12",
+          topics: [
+            {
+              topicId: 1,
+              title: "Phản ứng oxi hóa khử",
+            },
+            {
+              topicId: 2,
+              title: "Nhóm halogen",
+            },
+            {
+              topicId: 3,
+              title: "Oxi - Lưu huỳnh",
+            },
+          ],
         },
         {
-            categoryId: 13,
-            title: "THPT",
-            topicList: [
-                {
-                    id: 1,
-                    title: "Đề thi thử 1"
-                },
-                {
-                    id: 2,
-                    title: "Đề thi thử 2"
-                },
-                {
-                    id: 3,
-                    title: "Đề thi thử 3"
-                },
-                {
-                    id: 4,
-                    title: "Đề thi thử 4"
-                },
-                {
-                    id: 5,
-                    title: "Đề thi thử 5"
-                },
-                {
-                    id: 6,
-                    title: "Đề thi thử 6"
-                },
-                {
-                    id: 7,
-                    title: "Đề thi thử 7"
-                }
-            ]
+          categoryId: 13,
+          title: "THPT",
+          topics: [
+            {
+              topicId: 1,
+              title: "Đề thi thử 1",
+            },
+            {
+              topicId: 2,
+              title: "Đề thi thử 2",
+            },
+            {
+              topicId: 3,
+              title: "Đề thi thử 3",
+            },
+            {
+              topicId: 4,
+              title: "Đề thi thử 4",
+            },
+            {
+              topicId: 5,
+              title: "Đề thi thử 5",
+            },
+            {
+              topicId: 6,
+              title: "Đề thi thử 6",
+            },
+            {
+              topicId: 7,
+              title: "Đề thi thử 7",
+            },
+          ],
         },
       ],
     };
   },
-  mounted() {
-    this.lisTopic = this.listShow[0].topicList
+  async mounted() {
+    await this.getData();
+    await this.getExercises(2, "", 1, 10);
+    this.lisTopic = this.listShow[0].topicList;
+
+  },
+  watch: {
+    content() {
+      console.log("message changed", this.content);
+    },
   },
   methods: {
     filterExam() {
-      console.log(this.selectedInfo)
+      console.log(this.selectedInfo);
     },
     selectTopic(topicId) {
-      this.selectedInfo.topicId = topicId
-      let idx = this.lisTopic.findIndex(topic => topic.id == topicId)
-      if(idx != -1) this.selectedTopic = this.lisTopic[idx].title
+      this.selectedInfo.topicId = topicId;
+      let idx = this.lisTopic.findIndex((topic) => topic.id == topicId);
+      if (idx != -1) this.selectedTopic = this.lisTopic[idx].title;
     },
     selectCate(cateId) {
-      let idx = this.listShow.findIndex(cate => cate.categoryId == cateId)
-      if(idx != -1) this.lisTopic = this.listShow[idx].topicList
-      this.selectedInfo.cateId = cateId
-      this.selectedCate = this.listShow[idx].title
+      let idx = this.listShow.findIndex((cate) => cate.categoryId == cateId);
+      if (idx != -1) this.lisTopic = this.listShow[idx].topicList;
+      this.selectedInfo.cateId = cateId;
+      this.selectedCate = this.listShow[idx].title;
     },
     showModal() {
-        this.visible = true
-        console.log(this.visible)
+      this.visible = true;
+      console.log(this.visible);
     },
     closeModal() {
-        this.visible = false
-    }
+      this.visible = false;
+    },
+     async getData() {
+      try {
+        let data = await axios({
+          url: "http://localhost:8000/structure",
+          method: "GET",
+        });
+        if (data && data.data.structure) {
+          this.listShow = data.data.structure;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getExercises(topicId, textSearch = "", currentPage = 1) {
+      try {
+        let data = await axios({
+          url: `http://localhost:8000/exercises?topicId=${topicId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
+          method: "GET",
+        });
+        if (data && data.data.exerciseList) {
+          this.exercises = data.data.exerciseList;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>
@@ -283,7 +355,7 @@ export default {
 }
 
 .btn-admin:focus {
-    outline: none;
+  outline: none;
 }
 .admin-course {
   height: 350px;
@@ -363,8 +435,16 @@ td {
 table > tbody > tr > td {
   color: #22262e;
 }
-#app > div:nth-child(2) > div > div > div.admin-course > table > tbody > tr > td:nth-child(2) {
-    text-align: left;
+#app
+  > div:nth-child(2)
+  > div
+  > div
+  > div.admin-course
+  > table
+  > tbody
+  > tr
+  > td:nth-child(2) {
+  text-align: left;
 }
 .add-more:focus {
   outline: none;

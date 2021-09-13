@@ -1,14 +1,25 @@
 <template>
-  <QuillEditor theme="snow" toolbar="full" />
+  <h1>Basic Example</h1>
+  <QuillEditor v-model:content="content" />
 </template>
-<script>
 
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+<script lang="ts">
+import { ref, defineComponent } from 'vue'
+import { QuillEditor, Delta } from '@vueup/vue-quill'
 
-export default {
+export default defineComponent({
   components: {
-    QuillEditor
-  }
-}
+    QuillEditor,
+  },
+  setup: () => {
+    const content = ref<Delta>(
+      new Delta([
+        { insert: 'Gandalf', attributes: { bold: true } },
+        { insert: ' the ' },
+        { insert: 'Grey', attributes: { color: '#ccc' } },
+      ])
+    )
+    return { content }
+  },
+})
 </script>
