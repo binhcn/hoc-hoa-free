@@ -1,5 +1,6 @@
 package dev.binhcn.util;
 
+import dev.binhcn.statics.Constant;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -7,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -26,5 +28,12 @@ public class FileUtil {
     } catch (IOException ioe) {
       log.error("Could not save image file: " + fileName, ioe);
     }
+  }
+
+  public static String saveImage(MultipartFile multipartFile) {
+    String imageName = multipartFile.getOriginalFilename();
+    String fileName = StringUtils.cleanPath(imageName);
+    FileUtil.saveFile(Constant.IMAGE_DIR, fileName, multipartFile);
+    return fileName;
   }
 }

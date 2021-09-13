@@ -15,6 +15,8 @@ public class ExerciseUtil {
     details.setId(exercise.getId());
     details.setQuestion(exercise.getQuestion());
     details.setTopicId(exercise.getTopicId());
+    details.setCategoryId(exercise.getCategoryId());
+    details.setQuestionImage(exercise.getQuestionImage());
     details.setSolutionImage(exercise.getSolutionImage());
     details.setCreatedAt(sdf.format(exercise.getCreatedAt()));
     return details;

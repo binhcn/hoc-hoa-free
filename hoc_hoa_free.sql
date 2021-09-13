@@ -1,5 +1,5 @@
 Link postman
-https://www.getpostman.com/collections/ccee54a03c309555b5a1
+https://www.getpostman.com/collections/68620d95c642e74f8857
 
 CREATE TABLE hoc_hoa_free.`category` (
     `id` int NOT NULL AUTO_INCREMENT,
@@ -20,16 +20,18 @@ CREATE TABLE `topic` (
 
 CREATE TABLE `exercise` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `question` varchar(200) NOT NULL,
+    `question` varchar(1000) NOT NULL,
     `topic_id` int NOT NULL,
+    `category_id` int NOT NULL,
     `question_image` varchar(45) DEFAULT NULL,
     `solution_image` varchar(45) NOT NULL,
     `created_at` varchar(45) NOT NULL,
     PRIMARY KEY (`id`,`topic_id`),
     KEY `fk_topic_id_idx` (`topic_id`),
     KEY `created_at_idx` (`created_at` DESC),
+    KEY `category_id_idx` (`category_id` DESC),
     CONSTRAINT `fk_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 

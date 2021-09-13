@@ -16,6 +16,12 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Integer> {
       @Param("limit") int limit,
       @Param("offset") int offset);
 
+  @Query("SELECT * FROM exercise WHERE category_id = :categoryId ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
+  List<Exercise> findByCategoryId(
+      @Param("categoryId") int topicId,
+      @Param("limit") int limit,
+      @Param("offset") int offset);
+
   @Query("SELECT * FROM exercise ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
   List<Exercise> findAll(
       @Param("limit") int limit,
@@ -24,4 +30,6 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Integer> {
   Exercise findById(long i);
 
   long countByTopicId(int topicId);
+
+  long countByCategoryId(int categoryId);
 }

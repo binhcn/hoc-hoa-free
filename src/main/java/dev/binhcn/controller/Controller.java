@@ -1,10 +1,9 @@
 package dev.binhcn.controller;
 
-import dev.binhcn.dto.ExerciseHoaHocFreeResponse;
-import dev.binhcn.dto.ExerciseListResponse;
-import dev.binhcn.statics.Constant;
 import dev.binhcn.dto.CategoryAndTopic;
 import dev.binhcn.dto.CategoryAndTopicResponse;
+import dev.binhcn.dto.ExerciseHoaHocFreeResponse;
+import dev.binhcn.dto.ExerciseListResponse;
 import dev.binhcn.model.Category;
 import dev.binhcn.model.Exercise;
 import dev.binhcn.model.Topic;
@@ -19,16 +18,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequestMapping("api/")
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -63,37 +63,46 @@ public class Controller {
   }
 
   @PostMapping("/exercises")
-  public ResponseEntity saveExercise(int topicId, String question,
-      @RequestParam("solutionImage") MultipartFile multipartFile) {
-    String solutionImage = multipartFile.getOriginalFilename();
+  public ResponseEntity saveExercise(int topicId, int categoryId, String question,
+      @RequestParam("questionImage") MultipartFile questionImageFile,
+      @RequestParam("solutionImage") MultipartFile solutionImageFile) {
     Exercise exercise = new Exercise();
     exercise.setQuestion(question);
     exercise.setTopicId(topicId);
-    exercise.setSolutionImage(solutionImage);
+    exercise.setCategoryId(categoryId);
     exercise.setCreatedAt(System.currentTimeMillis());
-    Exercise response = exerciseRepository.save(exercise);
 
-    String fileName = StringUtils.cleanPath(solutionImage);
-    FileUtil.saveFile(Constant.IMAGE_DIR, fileName, multipartFile);
+    String solutionImageName = FileUtil.saveImage(solutionImageFile);
+    exercise.setSolutionImage(solutionImageName);
+    if (!questionImageFile.isEmpty()) {
+      String questionImageName = FileUtil.saveImage(questionImageFile);
+      exercise.setQuestionImage(questionImageName);
+    }
+    Exercise response = exerciseRepository.save(exercise);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @GetMapping("/exercises")
   public ResponseEntity getExercises(
       @RequestParam(value = "topicId", required = false) String topicIdString,
+      @RequestParam(value = "categoryId", required = false) String categoryIdString,
       @RequestParam(value = "text", required = false) String text,
       @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
     int offset = pageSize * (currentPage - 1);
     List<Exercise> exerciseList;
     long total;
-    if (topicIdString.isEmpty()) {
-      exerciseList = exerciseRepository.findAll(pageSize, offset);
-      total = exerciseRepository.count();
-    } else {
+    if (topicIdString.length() > 0) {
       int topicId = Integer.parseInt(topicIdString);
       exerciseList = exerciseRepository.findByTopicId(topicId, pageSize, offset);
       total = exerciseRepository.countByTopicId(topicId);
+    } else if(categoryIdString.length() > 0) {
+      int categoryId = Integer.parseInt(categoryIdString);
+      exerciseList = exerciseRepository.findByCategoryId(categoryId, pageSize, offset);
+      total = exerciseRepository.countByCategoryId(categoryId);
+    } else {
+      exerciseList = exerciseRepository.findAll(pageSize, offset);
+      total = exerciseRepository.count();
     }
     int lastPage = -1;
     if (pageSize > 0) {

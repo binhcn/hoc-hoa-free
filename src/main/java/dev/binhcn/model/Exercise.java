@@ -11,6 +11,8 @@ public class Exercise {
   private int id;
   private String question;
   private int topicId;
+  private int categoryId;
+  private String questionImage;
   private String solutionImage;
   private long createdAt;
 }

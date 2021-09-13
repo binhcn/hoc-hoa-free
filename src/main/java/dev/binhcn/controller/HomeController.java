@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("api/")
 public class HomeController {
 
-//    @RequestMapping("{?:(?:(?!api|static|\\.).)*}/**")
-    @RequestMapping("/binhcn")
+    @RequestMapping("{?:(?:(?!api|static|\\.).)*}/**")
     public String redirectApi() {
         return "/index.html";
     }
