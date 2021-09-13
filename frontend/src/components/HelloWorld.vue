@@ -323,6 +323,8 @@ export default {
   props: {},
   data() {
     return {
+      selectedCateId: 1,
+      selectedTopicId: 0,
       toggleSolutionText: true,
       selectedSolution: 0,
       isShowSolution: false,
@@ -444,6 +446,7 @@ export default {
       let idx = this.listShow.findIndex((cat) => cat.categoryId === cateId);
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
+      this.selectedCateId = cateId
       //   this.getExercises(cateId, topic, textSearch, currentPage, 10)
     },
     toggleNotifications() {
@@ -457,7 +460,7 @@ export default {
     async getData() {
       try {
         let data = await axios({
-          url: "http://localhost:8000/structure",
+          url: "http://localhost:8000/api/structure",
           method: "GET",
         });
         if (data && data.data.structure) {
@@ -467,22 +470,22 @@ export default {
         console.log(err);
       }
     },
-    async getExercises(topicId, textSearch = "", currentPage = 1) {
+    async getExercises(topicId, cateId, textSearch = "", currentPage = 1) {
       try {
         let data = await axios({
-          url: `http://localhost:8000/exercises?topicId=${topicId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
+          url: `http://localhost:8000/api/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
           method: "GET",
         });
         if (data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
-          console.log("......", this.exercises);
         }
       } catch (err) {
         console.log(err);
       }
     },
     getExercisesByTopic(id) {
-      this.getExercises(id, this.textSearch, this.current, 10);
+      this.selectedTopicId = id
+      this.getExercises(id, this.selectedCateId, this.textSearch, this.current, 10);
     },
     getExerciseByPage() {
       console.log("crrrrr", this.current);
@@ -490,9 +493,11 @@ export default {
   },
   created() {},
   async mounted() {
-    await this.getData();
+    await this.getData()
+    this.selectedCateId = 1
+    this.selectedTopicId = 1
     await this.getExercises(2, "", 1, 10);
-    this.showSelectedClass(11);
+    this.showSelectedClass(1);
     this.listTopic = this.listShow[0].topicList;
     this.toggleSolutionText = this.toggleSolutionText
       ? "Xem lời giải"

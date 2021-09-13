@@ -110,7 +110,7 @@
               <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div>
                   <label>Nhập câu hỏi</label>
-                <!-- <QuillEditor /> -->
+                <Editor />
                 </div>
                 
                 <div class="mt-4">
@@ -121,6 +121,7 @@
               </div>
               <div class="bg-gray-200 px-4 py-3 text-right">
                 <button
+                  @click="saveExercise"
                   type="button"
                   class="btn-dang py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
                 >
@@ -180,14 +181,15 @@
 <script>
 // import QuillEditor from './Editor.vue'
 import axios from 'axios'
+import Editor from './Editor.vue'
 
 export default {
   components: {
-    // QuillEditor,
+    Editor
   },
   data() {
     return {
-      
+      exercises: [],
       selectedCate: "Chọn cấp bậc",
       selectedTopic: "Chọn chủ đề",
       visible: false,
@@ -288,7 +290,7 @@ export default {
   },
   async mounted() {
     await this.getData();
-    await this.getExercises(2, "", 1, 10);
+    await this.getExercises(1, 1, "", 1, 10);
     this.lisTopic = this.listShow[0].topicList;
 
   },
@@ -298,8 +300,12 @@ export default {
     },
   },
   methods: {
+    saveExercise() {
+      this.saveChemistryExercise()
+    },
     filterExam() {
       console.log(this.selectedInfo);
+      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1, 10);
     },
     selectTopic(topicId) {
       this.selectedInfo.topicId = topicId;
@@ -322,7 +328,7 @@ export default {
      async getData() {
       try {
         let data = await axios({
-          url: "http://localhost:8000/structure",
+          url: "http://localhost:8000/api/structure",
           method: "GET",
         });
         if (data && data.data.structure) {
@@ -332,10 +338,10 @@ export default {
         console.log(err);
       }
     },
-    async getExercises(topicId, textSearch = "", currentPage = 1) {
+    async getExercises(topicId, cateId, textSearch = "", currentPage = 1) {
       try {
         let data = await axios({
-          url: `http://localhost:8000/exercises?topicId=${topicId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
+          url: `http://localhost:8000/api/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
           method: "GET",
         });
         if (data && data.data.exerciseList) {
@@ -345,6 +351,23 @@ export default {
         console.log(err);
       }
     },
+    async saveChemistryExercise() {
+      try {
+        let data = await axios({
+          url: "http://localhost:8000/api/exercises",
+          method: "POST",
+          params: {
+            topicId: this.selectedInfo.topicId,
+            categoryId: this.selectedInfo.cateId,
+            question: '',
+            questionImage: null,
+            solutionImage: null
+          }
+        });
+      } catch(err) {
+        console.log('err', err)
+      }
+    }
   },
 };
 </script>
