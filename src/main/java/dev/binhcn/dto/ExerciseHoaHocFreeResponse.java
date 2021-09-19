@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ExerciseHoaHocFreeResponse extends HoaHocFreeResponse {
-  private int id;
+  private long id;
   private String question;
   private int topicId;
   private int categoryId;

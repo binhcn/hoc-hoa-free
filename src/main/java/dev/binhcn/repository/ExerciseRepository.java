@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExerciseRepository extends CrudRepository<Exercise, Integer> {
+public interface ExerciseRepository extends CrudRepository<Exercise, Long> {
 
   @Query("SELECT * FROM exercise WHERE topic_id = :topicId ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
   List<Exercise> findByTopicId(
@@ -27,7 +27,7 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Integer> {
       @Param("limit") int limit,
       @Param("offset") int offset);
 
-  Exercise findById(long i);
+  Exercise findById(long id);
 
   long countByTopicId(int topicId);
 

@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("exercise")
 public class Exercise {
   @Id
-  private int id;
+  private long id;
   private String question;
   private int topicId;
   private int categoryId;
