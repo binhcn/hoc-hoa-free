@@ -213,6 +213,8 @@ export default {
   },
   data() {
     return {
+      questionImage: null,
+      solutionImage: null,
       questionImg:'',
       image: '',
       question: '',
@@ -333,12 +335,17 @@ export default {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
+      this.questionImage = files[0]
+      console.log("question", this.questionImage)
       this.createImage(files[0], true);
     },
     onFileSolutionChange(e) {
       let files = e.target.files || e.dataTransfer.files;
+      console.log(files)
       if (!files.length)
         return;
+      this.solutionImage = files[0]
+      console.log("solution", this.solutionImage)
       this.createImage(files[0], false);
     },
     createImage(file, bool) {
@@ -419,14 +426,26 @@ export default {
         // formData.append('categoryId', this.selectedInfo.cateId);
         formData.append('categoryId', 1);
         formData.append('question', this.question);
-        formData.append('questionImage', this.questionImg);
-        formData.append('solutionImage', this.image);
+        formData.append('questionImage', this.questionImage);
+        formData.append('solutionImage', this.solutionImage);
         console.log("formData nek", this)
-        let data = await axios({
-          url: "http://localhost:8000/api/exercises",
-          method: "POST",
-          formData
-        });
+        // let data = await axios({
+        //   url: "http://localhost:8000/api/exercises",
+        //   method: "POST",
+        //   formData,
+        //   headers: {
+        //   'Content-Type': 'multipart/form-data'
+        //   }
+        // });
+        let data = await axios.post(
+          "http://localhost:8000/api/exercises",
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        );
       } catch(err) {
         console.log('err', err)
       }

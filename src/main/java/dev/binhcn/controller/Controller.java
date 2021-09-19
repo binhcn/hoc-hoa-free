@@ -65,13 +65,14 @@ public class Controller {
   }
 
   @PostMapping("/exercises")
-  public ResponseEntity saveExercise(int topicId, int categoryId, String question,
+  public ResponseEntity saveExercise(String topicId, String categoryId, String question,
       @RequestParam(value = "questionImage", required = false) MultipartFile questionImageFile,
       @RequestParam("solutionImage") MultipartFile solutionImageFile) {
+
     Exercise exercise = new Exercise();
     exercise.setQuestion(question);
-    exercise.setTopicId(topicId);
-    exercise.setCategoryId(categoryId);
+    exercise.setTopicId(Integer.parseInt(topicId));
+    exercise.setCategoryId(Integer.parseInt(categoryId));
     exercise.setCreatedAt(System.currentTimeMillis());
 
     String solutionImageName = FileUtil.saveImage(solutionImageFile);
