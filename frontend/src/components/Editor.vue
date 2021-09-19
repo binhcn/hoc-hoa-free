@@ -30,7 +30,7 @@ export default {
 
   methods: {
     saveQuestion() {
-      this.$emit('inputData', this.contentHTML);
+      this.$emit('inputData', this.contentHTML.trim());
       this.contentHTML = '';
     },
   },

@@ -130,6 +130,7 @@
       <!--  category -->
       <div class="flex justify-center items-center">
         <button
+          :class="[cate.id === selectedCateId ? 'activeCate' : '']"
           @click="() => showTopic(cate.categoryId)"
           v-for="(cate, idx) in listShow"
           :key="idx"
@@ -291,7 +292,11 @@
         >
           <strong>Câu {{ idx + 1 }}</strong>
           <p class="text-sm text-left font-normal">
-            {{ exercise.question }}
+            <span :innerHTML="exercise.question">
+              </span>
+              <div v-if="exercise.questionImage">
+                <img :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"/>
+              </div>
           </p>
           <div class="flex justify-end pr-10">
             <button
@@ -309,7 +314,9 @@
           </div>
         </div>
         <!-- pagination -->
-        <a-pagination v-model="current" :total="50" show-less-items />
+        <a-pagination 
+          :current="current" :total="50" @change="onChange"
+        />
       </div>
     </main>
   </div>
@@ -426,10 +433,11 @@ export default {
       ],
     };
   },
-  //   created() {
-
-  //   },
   methods: {
+    onChange(current) {
+      this.current = current;
+      this.getExercises(this.selectedCateId, this.selectedCateId, "", current)
+    },
     toggleSolution(exerciseId) {
       this.selectedSolution = exerciseId;
       this.isShowSolution = !this.isShowSolution;
@@ -447,7 +455,6 @@ export default {
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
       this.selectedCateId = cateId
-      //   this.getExercises(cateId, topic, textSearch, currentPage, 10)
     },
     toggleNotifications() {
       this.$refs.notifications.scrollTo(0, 0);
@@ -525,6 +532,9 @@ export default {
 </script>
 
 <style scoped>
+.activeCate {
+  background: blue;
+}
 .input-search:focus {
   outline: none;
   border: 1px solid rgb(40, 73, 97);

@@ -71,6 +71,7 @@
 
         <!-- search -->
         <button
+          :disabled="!this.selectedInfo.cateId || !this.selectedInfo.topicId"
           @click="filterExam()"
           class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded items-center ml-8"
         >
@@ -81,6 +82,7 @@
       <div>
         <div class="flex items-center justify-center h-full">
           <button
+            :disabled="!this.selectedInfo.cateId || !this.selectedInfo.topicId"
             class="add-more py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
             @click="() => showModal()"
           >
@@ -165,38 +167,55 @@
       </div>
     </div>
 
+    <div class="mb-4 text-xs text-red-500 flex justify-start items-center"><span>Yêu cầu chọn cấp bậc và chủ đề để tìm kiếm và thêm bài tập</span></div>
+
     <!-- TABLE LIST -->
     <div className="admin-course">
       <table class="table-fill">
         <thead>
           <tr>
-            <th className="text-left w-16">STT</th>
+            <th className="text-left w-16">ID</th>
             <th className="text-left">Bài tập</th>
             <th className="text-left w-40">Lời giải</th>
             <th className="text-left w-20">Hành động</th>
           </tr>
         </thead>
         <tbody class="table-hover">
-          <tr key="">
-            <td className="text-left">123</td>
+          <template v-if="exercises?.length > 0" >
+            <template v-for="(exercise, idx) in exercises">
+            <tr>
+            <td className="text-left">{{ exercise.id }}</td>
             <td className="text-left">
-              Nhiệt phân hoàn toàn 11,88 gam X (là muối ở dạng ngậm nước), thu
-              được hỗn hợp Y (gồm khí và hơi) và 3,24 gam một chất rắn Z. Hấp
-              thụ hết Y vào nước, thu được dung dịch T. Cho 80 ml dung dịch NaOH
-              1M vào T thu được dung dịch chỉ chứa một muối, khối lượng của muối
-              là 6,8. Phần trăm khối lượng nguyên tố oxi trong X là
+              <div>
+              <span :innerHTML="exercise.question">
+              </span>
+              </div>
+              <div v-if="exercise.questionImage">
+                <img :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"/>
+              </div>
             </td>
             <td className="">
-              <img src="https://picsum.photos/50/50" alt="..." />
+              <a target="blank" :href="`http://localhost:8000/api/images/${exercise.solutionImage}`">
+                 <img class="zoom-solution" style="width: 50px; height: 50px;" :src="`http://localhost:8000/api/images/${exercise.solutionImage}`" alt="..." />
+              </a>
             </td>
             <td className="text-left">
               <div className="flex justify-center items-center">
-                <button className=" action-btn">
+                <button @click="deleteExercise(exercise.id)" className=" action-btn">
                   <i class="fa fa-trash"></i>
                 </button>
               </div>
             </td>
           </tr>
+          </template>
+          </template>
+          <template v-else>
+            <tr class="text-red-500">
+              <td colspan="4">
+                Không tìm thấy bài tập nào !
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -319,33 +338,39 @@ export default {
   },
   async mounted() {
     await this.getData();
-    await this.getExercises(1, 1, "", 1, 10);
+    await this.getExercises(1, 1, "", 1);
     this.lisTopic = this.listShow[0].topicList;
+    console.log(!this.selectedInfo.cateId)
+    console.log(!this.selectedInfo.topicId)
+    // this.checkDisabled()
   },
-  watch: {
-    image() {
-      console.log("IMAGE", this.image)
-    },
-    questionImg() {
-      console.log("QUESTION IMAGE", this.questionImg)
-    }
+  watch() {
+
   },
   methods: {
+    async deleteExercise(id) {
+      try {
+        let data = await axios({
+          url: `http://localhost:8000/api/exercises/${id}`,
+          method: 'DELETE'
+        })
+        this.getExercises()
+      } catch(err) {
+        console.log("err", err)
+      }
+    },
     onFileQuestionChange(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
       this.questionImage = files[0]
-      console.log("question", this.questionImage)
       this.createImage(files[0], true);
     },
     onFileSolutionChange(e) {
       let files = e.target.files || e.dataTransfer.files;
-      console.log(files)
       if (!files.length)
         return;
       this.solutionImage = files[0]
-      console.log("solution", this.solutionImage)
       this.createImage(files[0], false);
     },
     createImage(file, bool) {
@@ -372,7 +397,7 @@ export default {
       this.saveChemistryExercise()
     },
     filterExam() {
-      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1, 10);
+      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1);
     },
     selectTopic(topicId) {
       this.selectedInfo.topicId = topicId;
@@ -387,7 +412,6 @@ export default {
     },
     showModal() {
       this.visible = true;
-      console.log(this.visible);
     },
     closeModal() {
       this.visible = false;
@@ -413,6 +437,7 @@ export default {
         });
         if (data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
+          console.log("exercise", this.exercises)
         }
       } catch (err) {
         console.log(err);
@@ -428,7 +453,6 @@ export default {
         formData.append('question', this.question);
         formData.append('questionImage', this.questionImage);
         formData.append('solutionImage', this.solutionImage);
-        console.log("formData nek", this)
         // let data = await axios({
         //   url: "http://localhost:8000/api/exercises",
         //   method: "POST",
@@ -454,6 +478,9 @@ export default {
 };
 </script>
 <style scoped>
+/* .zoom-solution:hover {
+  transform: scale(15); 
+} */
 .dropdown:hover .dropdown-menu {
   display: block;
   z-index: 10;
@@ -461,6 +488,8 @@ export default {
 
 .btn-admin:focus {
   outline: none;
+  background: gray;
+  color: white;
 }
 .admin-course {
   height: 350px;
