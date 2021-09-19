@@ -117,20 +117,28 @@
                 <Editor :question="question" @inputData="updateMessage" />
                 </div>
 
+                <!-- IMAGE QUESTION -->
                 <div>
                   <label class="text-blue-500 font-bold">Tải câu hỏi dạng hình ảnh</label><br />
-              
+                  <div class="mt-4" v-if="!questionImg">
+                  <input type="file" @change="onFileQuestionChange">
                 </div>
-                
+                <div v-else>
+                  <img :src="questionImg" />
+                  <button 
+                  class="mt-4 text-red-500 font-bold" @click="removeImage(1)">Xóa câu hỏi</button>
+                </div>
+                </div>
+                <!-- IMAGE SOLUTON -->
                 <div class="mt-4">
                   <label class="text-blue-500 font-bold">Tải lời giải</label><br />
                 <div class="mt-4" v-if="!image">
-                  <input type="file" @change="onFileChange">
+                  <input type="file" @change="onFileSolutionChange">
                 </div>
                 <div v-else>
                   <img :src="image" />
                   <button 
-                  class="mt-4 text-red-500 font-bold" @click="removeImage">Xóa lời giải</button>
+                  class="mt-4 text-red-500 font-bold" @click="removeImage(1)">Xóa lời giải</button>
                 </div>
                 </div>
                 
@@ -205,6 +213,7 @@ export default {
   },
   data() {
     return {
+      questionImg:'',
       image: '',
       question: '',
       exercises: [],
@@ -313,28 +322,40 @@ export default {
   },
   watch: {
     image() {
-      console.log("this.image nef", this.image)
+      console.log("IMAGE", this.image)
+    },
+    questionImg() {
+      console.log("QUESTION IMAGE", this.questionImg)
     }
   },
   methods: {
-    onFileChange(e) {
+    onFileQuestionChange(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
-      this.createImage(files[0]);
+      this.createImage(files[0], true);
     },
-    createImage(file) {
+    onFileSolutionChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0], false);
+    },
+    createImage(file, bool) {
       let image = new Image();
       let reader = new FileReader();
       let vm = this;
 
       reader.onload = (e) => {
-        vm.image = e.target.result;
+        if(bool) vm.questionImg = e.target.result;
+        else vm.image = e.target.result;
       };
       reader.readAsDataURL(file);
     },
-    removeImage() {
-      this.image = '';
+    removeImage(id) {
+      // id === 1 (image)
+      if(id) this.image = '';
+      
     },
     updateMessage(mes) {
       this.question = mes;
@@ -393,11 +414,14 @@ export default {
     async saveChemistryExercise() {
       try {
         const formData = new FormData();
-        formData.append('topicId', this.selectedInfo.topicId);
-        formData.append('categoryId', this.selectedInfo.categoryId);
+        // formData.append('topicId', this.selectedInfo.topicId);
+        formData.append('topicId', 1);
+        // formData.append('categoryId', this.selectedInfo.cateId);
+        formData.append('categoryId', 1);
         formData.append('question', this.question);
-        formData.append('questionImage', '');
+        formData.append('questionImage', this.questionImg);
         formData.append('solutionImage', this.image);
+        console.log("formData nek", this)
         let data = await axios({
           url: "http://localhost:8000/api/exercises",
           method: "POST",
