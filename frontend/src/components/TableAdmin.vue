@@ -107,15 +107,31 @@
               aria-modal="true"
               aria-labelledby="modal-headline"
             >
-              <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div 
+                class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"
+                style="max-height: 400px;
+    overflow-y: auto;"
+              >
                 <div>
-                  <label>Nhập câu hỏi</label>
-                <Editor />
+                  <label class="text-blue-500 font-bold">Nhập câu hỏi dạng text</label>
+                <Editor :question="question" @inputData="updateMessage" />
+                </div>
+
+                <div>
+                  <label class="text-blue-500 font-bold">Tải câu hỏi dạng hình ảnh</label><br />
+              
                 </div>
                 
                 <div class="mt-4">
-                  <label >Tải lời giải</label><br />
-                <input type="file" id="myFile" name="filename" />
+                  <label class="text-blue-500 font-bold">Tải lời giải</label><br />
+                <div class="mt-4" v-if="!image">
+                  <input type="file" @change="onFileChange">
+                </div>
+                <div v-else>
+                  <img :src="image" />
+                  <button 
+                  class="mt-4 text-red-500 font-bold" @click="removeImage">Xóa lời giải</button>
+                </div>
                 </div>
                 
               </div>
@@ -189,6 +205,8 @@ export default {
   },
   data() {
     return {
+      image: '',
+      question: '',
       exercises: [],
       selectedCate: "Chọn cấp bậc",
       selectedTopic: "Chọn chủ đề",
@@ -292,19 +310,40 @@ export default {
     await this.getData();
     await this.getExercises(1, 1, "", 1, 10);
     this.lisTopic = this.listShow[0].topicList;
-
   },
   watch: {
-    content() {
-      console.log("message changed", this.content);
-    },
+    image() {
+      console.log("this.image nef", this.image)
+    }
   },
   methods: {
+    onFileChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      let image = new Image();
+      let reader = new FileReader();
+      let vm = this;
+
+      reader.onload = (e) => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage() {
+      this.image = '';
+    },
+    updateMessage(mes) {
+      this.question = mes;
+    }
+    ,
     saveExercise() {
       this.saveChemistryExercise()
     },
     filterExam() {
-      console.log(this.selectedInfo);
       this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1, 10);
     },
     selectTopic(topicId) {
@@ -353,16 +392,16 @@ export default {
     },
     async saveChemistryExercise() {
       try {
+        const formData = new FormData();
+        formData.append('topicId', this.selectedInfo.topicId);
+        formData.append('categoryId', this.selectedInfo.categoryId);
+        formData.append('question', this.question);
+        formData.append('questionImage', '');
+        formData.append('solutionImage', this.image);
         let data = await axios({
           url: "http://localhost:8000/api/exercises",
           method: "POST",
-          params: {
-            topicId: this.selectedInfo.topicId,
-            categoryId: this.selectedInfo.cateId,
-            question: '',
-            questionImage: null,
-            solutionImage: null
-          }
+          formData
         });
       } catch(err) {
         console.log('err', err)

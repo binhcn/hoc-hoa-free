@@ -1,24 +1,38 @@
 <template>
-<div>
- <h1>Content Type</h1>
-  <QuillEditor v-model:content="contentHTML" contentType="html" theme="snow" toolbar="full"/>
-  <pre>{{ contentHTML }}</pre>
-</div>
- 
+  <div>
+    <QuillEditor
+      v-model:content="contentHTML"
+      contentType="html"
+      theme="snow"
+      toolbar="full"
+      @keypress="saveQuestion()"
+    />
+  </div>
 </template>
 
-<script lang="ts">
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import { ref, defineComponent } from 'vue'
-import { QuillEditor, Delta } from '@vueup/vue-quill'
-export default defineComponent({
+<script>
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { ref, defineComponent } from "vue";
+import { QuillEditor, Delta } from "@vueup/vue-quill";
+// import { Vue, Component, Prop } from "vue-property-decorator";
+
+export default {
+
   components: {
     QuillEditor,
   },
-  setup: () => {
-    const contentHTML = ref('<h1>This is html header</h1>')
-    return { contentHTML }
+   data() {
+    const contentHTML = ref('')
+    return { 
+      contentHTML, 
+    }
   },
-  
-})
+
+  methods: {
+    saveQuestion() {
+      this.$emit('inputData', this.contentHTML);
+      this.contentHTML = '';
+    },
+  },
+};
 </script>

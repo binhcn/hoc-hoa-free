@@ -303,7 +303,7 @@
           </div>
           <div v-if="isShowSolution && selectedSolution == exercise.id">
             <img
-              :src="`http://localhost:8000/images/${exercise.solutionImage}`"
+              :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"
               :alt="exercise.solutionImage"
             />
           </div>
