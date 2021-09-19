@@ -14,6 +14,7 @@ import dev.binhcn.util.ExerciseUtil;
 import dev.binhcn.util.FileUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class Controller {
 
   @PostMapping("/exercises")
   public ResponseEntity saveExercise(int topicId, int categoryId, String question,
-      @RequestParam("questionImage") MultipartFile questionImageFile,
+      @RequestParam(value = "questionImage", required = false) MultipartFile questionImageFile,
       @RequestParam("solutionImage") MultipartFile solutionImageFile) {
     Exercise exercise = new Exercise();
     exercise.setQuestion(question);
@@ -74,7 +75,7 @@ public class Controller {
 
     String solutionImageName = FileUtil.saveImage(solutionImageFile);
     exercise.setSolutionImage(solutionImageName);
-    if (!questionImageFile.isEmpty()) {
+    if (Objects.nonNull(questionImageFile) && !questionImageFile.isEmpty()) {
       String questionImageName = FileUtil.saveImage(questionImageFile);
       exercise.setQuestionImage(questionImageName);
     }
