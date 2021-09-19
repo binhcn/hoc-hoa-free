@@ -1,5 +1,5 @@
 Link postman
-https://www.getpostman.com/collections/68620d95c642e74f8857
+https://www.getpostman.com/collections/2217dca56beffda01871
 
 CREATE TABLE hoc_hoa_free.`category` (
     `id` int NOT NULL AUTO_INCREMENT,
