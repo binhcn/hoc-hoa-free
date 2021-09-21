@@ -354,7 +354,7 @@ export default {
           url: `http://localhost:8000/api/exercises/${id}`,
           method: 'DELETE'
         })
-        this.getExercises()
+        this.getExercises(1, 1, "", 1)
       } catch(err) {
         console.log("err", err)
       }
