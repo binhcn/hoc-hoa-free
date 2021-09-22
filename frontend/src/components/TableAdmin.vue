@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto">
     <!-- header -->
-    <div class="font-bold mt-0 pt-0 mb-2 text-xl">
+    <div class="font-bold mt-0 pt-0 mb-4 text-xl" style="margin-top: -40px;">
       THÔNG TIN BÀI TẬP
     </div>
 
@@ -41,9 +41,9 @@
             class="btn-admin bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded flex items-center justify-between"
             style="width: 175px;"
           >
-            <span class="mr-1 w-44" style="width: 150px">{{
+            <span class="mr-1 w-44" style="width: 200px">{{
               selectedTopic.length > 15
-                ? selectedTopic.substring(0, 16) + "..."
+                ? selectedTopic.substring(0, 15) + "..."
                 : selectedTopic
             }}</span>
             <svg
@@ -56,7 +56,9 @@
               />
             </svg>
           </button>
-          <ul class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
+          <ul 
+            v-if="this.selectedInfo.cateId"
+            class="dropdown-menu absolute hidden text-gray-700 pt-2 ">
             <li class="" v-for="(topic, idx) in lisTopic" :key="idx">
               <a
                 @click="selectTopic(topic.id)"
@@ -128,7 +130,7 @@
                 <div v-else>
                   <img :src="questionImg" />
                   <button 
-                  class="mt-4 text-red-500 font-bold" @click="removeImage(1)">Xóa câu hỏi</button>
+                  class="mt-4 text-red-500 font-bold" @click="removeImage(0)">Xóa câu hỏi</button>
                 </div>
                 </div>
                 <!-- IMAGE SOLUTON -->
@@ -218,6 +220,15 @@
           </template>
         </tbody>
       </table>
+      <!-- pagination -->
+      <!--  v-if="exercises && exercises.length > 0" -->
+      <div class="mt-8">
+         <a-pagination 
+          v-if="exercises && exercises.length > 0"
+          :current="current" :total="exercises.length" @change="onChange"
+        />
+      </div>
+       
     </div>
   </div>
 </template>
@@ -232,6 +243,7 @@ export default {
   },
   data() {
     return {
+      current: 1,
       questionImage: null,
       solutionImage: null,
       questionImg:'',
@@ -338,23 +350,24 @@ export default {
   },
   async mounted() {
     await this.getData();
-    await this.getExercises(1, 1, "", 1);
+    this.exercises = []
     this.lisTopic = this.listShow[0].topicList;
-    console.log(!this.selectedInfo.cateId)
-    console.log(!this.selectedInfo.topicId)
-    // this.checkDisabled()
   },
   watch() {
 
   },
   methods: {
+    onChange(current) {
+      this.current = current;
+      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", current)
+    },
     async deleteExercise(id) {
       try {
         let data = await axios({
           url: `http://localhost:8000/api/exercises/${id}`,
           method: 'DELETE'
         })
-        this.getExercises(1, 1, "", 1)
+        this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1)
       } catch(err) {
         console.log("err", err)
       }
@@ -387,7 +400,7 @@ export default {
     removeImage(id) {
       // id === 1 (image)
       if(id) this.image = '';
-      
+      else this.questionImg = '';
     },
     updateMessage(mes) {
       this.question = mes;
@@ -395,19 +408,27 @@ export default {
     ,
     saveExercise() {
       this.saveChemistryExercise()
+      this.closeModal()
+      this.image = ''
+      this.questionImg = ''
     },
     filterExam() {
+      console.log("cateId", this.selectedInfo.cateId)
+      console.log("topicId", this.selectedInfo.topicId)
       this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1);
     },
     selectTopic(topicId) {
       this.selectedInfo.topicId = topicId;
       let idx = this.lisTopic.findIndex((topic) => topic.id == topicId);
       if (idx != -1) this.selectedTopic = this.lisTopic[idx].title;
+      console.log("after select topic", this.selectedInfo.topicId)
+
     },
     selectCate(cateId) {
       let idx = this.listShow.findIndex((cate) => cate.categoryId == cateId);
       if (idx != -1) this.lisTopic = this.listShow[idx].topicList;
       this.selectedInfo.cateId = cateId;
+      console.log("after select cate", this.selectedInfo.cateId)
       this.selectedCate = this.listShow[idx].title;
     },
     showModal() {
@@ -446,21 +467,11 @@ export default {
     async saveChemistryExercise() {
       try {
         const formData = new FormData();
-        // formData.append('topicId', this.selectedInfo.topicId);
-        formData.append('topicId', 1);
-        // formData.append('categoryId', this.selectedInfo.cateId);
-        formData.append('categoryId', 1);
+        formData.append('topicId', this.selectedInfo.topicId);
+        formData.append('categoryId', this.selectedInfo.cateId);
         formData.append('question', this.question);
         formData.append('questionImage', this.questionImage);
         formData.append('solutionImage', this.solutionImage);
-        // let data = await axios({
-        //   url: "http://localhost:8000/api/exercises",
-        //   method: "POST",
-        //   formData,
-        //   headers: {
-        //   'Content-Type': 'multipart/form-data'
-        //   }
-        // });
         let data = await axios.post(
           "http://localhost:8000/api/exercises",
           formData,
@@ -537,8 +548,9 @@ tr {
 }
 
 tr:hover td {
-  background: #22262e;
-  color: white;
+  /* background: #22262e; */
+  color: #22262e;
+  /* color: white; */
 }
 
 tr:nth-child(odd) td {
@@ -546,7 +558,8 @@ tr:nth-child(odd) td {
 }
 
 tr:nth-child(odd):hover td {
-  background: #4e5066;
+  /* background: #4e5066; */
+  color: #22262e;
 }
 
 tr:last-child td:first-child {

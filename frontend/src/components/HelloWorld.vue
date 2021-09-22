@@ -122,12 +122,15 @@
       <div class="flex items-center justify-center search-bar">
         <div class="border rounded ">
           <input
+            v-model="textSearch"
             type="text"
             class="px-4 py-2 input-search text-black"
             placeholder="Tìm kiếm..."
+            @keypress.enter="searchExercises()"
           />
         </div>
         <button
+          @click="searchExercises()"
           class="flex px-2 items-center justify-center border-l"
           style="margin-left: 5px"
         >
@@ -421,9 +424,12 @@ export default {
     };
   },
   methods: {
+    searchExercises() {
+      this.getExercises(this.selectedTopicId, this.selectedCateId, this.textSearch, 1)
+    },
     onChange(current) {
       this.current = current;
-      this.getExercises(this.selectedCateId, this.selectedCateId, "", current)
+      this.getExercises(this.selectedTopicId, this.selectedCateId, "", current)
     },
     toggleSolution(exerciseId) {
       this.selectedSolution = exerciseId;
@@ -481,7 +487,7 @@ export default {
     },
     getExercisesByTopic(id) {
       this.selectedTopicId = id
-      this.getExercises(id, this.selectedCateId, this.textSearch, this.current, 10);
+      this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
     },
     getExerciseByPage() {
       console.log("crrrrr", this.current);
@@ -492,7 +498,7 @@ export default {
     await this.getData()
     this.selectedCateId = 1
     this.selectedTopicId = 1
-    await this.getExercises(2, "", 1, 10);
+    await this.getExercises(this.selectedTopicId, this.selectedCateId,'', 1);
     this.showSelectedClass(1);
     this.listTopic = this.listShow[0].topicList;
     this.toggleSolutionText = this.toggleSolutionText
