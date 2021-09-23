@@ -1,6 +1,5 @@
 package dev.binhcn.util;
 
-import dev.binhcn.statics.Constant;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -30,10 +29,10 @@ public class FileUtil {
     }
   }
 
-  public static String saveImage(MultipartFile multipartFile) {
+  public static String saveFile(MultipartFile multipartFile, String parentFolder) {
     String imageName = multipartFile.getOriginalFilename();
     String fileName = StringUtils.cleanPath(imageName);
-    FileUtil.saveFile(Constant.IMAGE_DIR, fileName, multipartFile);
+    FileUtil.saveFile(parentFolder, fileName, multipartFile);
     return fileName;
   }
 }

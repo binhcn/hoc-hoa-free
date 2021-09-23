@@ -1,5 +1,5 @@
 Link postman
-https://www.getpostman.com/collections/2217dca56beffda01871
+https://www.getpostman.com/collections/e041a18fdf955ba8df77
 
 CREATE TABLE hoc_hoa_free.`category` (
     `id` int NOT NULL AUTO_INCREMENT,
@@ -8,7 +8,7 @@ CREATE TABLE hoc_hoa_free.`category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE `topic` (
+CREATE TABLE hoc_hoa_free.`topic` (
      `id` int NOT NULL AUTO_INCREMENT,
      `title` varchar(45) NOT NULL,
      `category_id` int NOT NULL,
@@ -17,8 +17,7 @@ CREATE TABLE `topic` (
      CONSTRAINT `fk_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-CREATE TABLE `exercise` (
+CREATE TABLE hoc_hoa_free.`exercise` (
     `id` int NOT NULL AUTO_INCREMENT,
     `question` varchar(1000) NOT NULL,
     `topic_id` int NOT NULL,
@@ -27,12 +26,21 @@ CREATE TABLE `exercise` (
     `solution_image` varchar(45) NOT NULL,
     `created_at` varchar(45) NOT NULL,
     PRIMARY KEY (`id`,`topic_id`),
-    KEY `fk_topic_id_idx` (`topic_id`),
     KEY `created_at_idx` (`created_at` DESC),
-    KEY `category_id_idx` (`category_id` DESC),
-    CONSTRAINT `fk_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`)
+    KEY `category_id_idx` (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE hoc_hoa_free.`exam` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `title` varchar(200) NOT NULL,
+    `topic_id` int NOT NULL,
+    `question_image` varchar(45) NOT NULL,
+    `exam_file` varchar(45) NOT NULL,
+    `created_at` varchar(45) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `created_at_idx` (`created_at` DESC),
+    KEY `topic_id_idx` (`topic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 INSERT INTO `hoc_hoa_free`.`category`(`id`, `title`) VALUES ('1', 'LỚP 11');
