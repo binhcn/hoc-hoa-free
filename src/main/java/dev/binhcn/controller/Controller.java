@@ -142,7 +142,7 @@ public class Controller {
 
   @PostMapping("/exams")
   public ResponseEntity saveExam(String topicId, String title,
-      @RequestParam(value = "examImageFile") MultipartFile examImageFile,
+      @RequestParam(value = "examImage") MultipartFile examImageFile,
       @RequestParam("examFile") MultipartFile examFile) {
 
     Exam exam = new Exam();
