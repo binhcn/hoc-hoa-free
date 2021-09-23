@@ -142,15 +142,15 @@ public class Controller {
 
   @PostMapping("/exams")
   public ResponseEntity saveExam(String topicId, String title,
-      @RequestParam(value = "questionImage") MultipartFile questionImageFile,
+      @RequestParam(value = "examImageFile") MultipartFile examImageFile,
       @RequestParam("examFile") MultipartFile examFile) {
 
     Exam exam = new Exam();
     exam.setTitle(title);
     exam.setTopicId(Integer.parseInt(topicId));
     exam.setCreatedAt(System.currentTimeMillis());
-    String questionImageName = FileUtil.saveFile(questionImageFile, Constant.IMAGE_DIR);
-    exam.setQuestionImage(questionImageName);
+    String examImageName = FileUtil.saveFile(examImageFile, Constant.IMAGE_DIR);
+    exam.setExamImage(examImageName);
     String examFilename = FileUtil.saveFile(examFile, Constant.FILE_DIR);
     exam.setExamFile(examFilename);
 

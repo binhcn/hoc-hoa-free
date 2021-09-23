@@ -11,7 +11,7 @@ public class Exam {
   private long id;
   private String title;
   private int topicId;
-  private String questionImage;
+  private String examImage;
   private String examFile;
   private long createdAt;
 }

@@ -13,9 +13,9 @@ public class ExamUtil {
   public static ExamHoaHocFreeResponse parseDetails(Exam exam) {
     ExamHoaHocFreeResponse details = new ExamHoaHocFreeResponse();
     details.setId(exam.getId());
-    details.setQuestion(exam.getTitle());
+    details.setTitle(exam.getTitle());
     details.setTopicId(exam.getTopicId());
-    details.setQuestionImage(exam.getQuestionImage());
+    details.setExamImage(exam.getExamImage());
     details.setExamFile(exam.getExamFile());
     details.setCreatedAt(sdf.format(exam.getCreatedAt()));
     return details;

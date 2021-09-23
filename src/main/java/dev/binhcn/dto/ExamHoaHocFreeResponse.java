@@ -7,7 +7,7 @@ public class ExamHoaHocFreeResponse extends HoaHocFreeResponse {
   private long id;
   private String title;
   private int topicId;
-  private String questionImage;
+  private String examImage;
   private String examFile;
   private String createdAt;
 }

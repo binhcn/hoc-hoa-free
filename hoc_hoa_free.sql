@@ -1,5 +1,5 @@
 Link postman
-https://www.getpostman.com/collections/e041a18fdf955ba8df77
+https://www.getpostman.com/collections/7e350086a524659154e4
 
 CREATE TABLE hoc_hoa_free.`category` (
     `id` int NOT NULL AUTO_INCREMENT,
@@ -34,7 +34,7 @@ CREATE TABLE hoc_hoa_free.`exam` (
     `id` int NOT NULL AUTO_INCREMENT,
     `title` varchar(200) NOT NULL,
     `topic_id` int NOT NULL,
-    `question_image` varchar(45) NOT NULL,
+    `exam_image` varchar(45) NOT NULL,
     `exam_file` varchar(45) NOT NULL,
     `created_at` varchar(45) NOT NULL,
     PRIMARY KEY (`id`),
