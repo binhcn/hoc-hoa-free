@@ -267,7 +267,7 @@
       </h1>
 
       <div class="p-4">
-        <template v-if="exercises.length > 0">
+        <template v-if="exercises.length > 0 && this.selectedCateId !== 3">
           <div
           v-for="(exercise, idx) in exercises"
           :key="idx"
@@ -297,6 +297,14 @@
           </div>
         </div>
         </template>
+        <template v-else-if="this.selectedCateId === 3">
+          <!-- LIST DE THI THPT NAM -->
+          <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
+            <router-link target='_blank' class="text-left" :to="`/exam/${exam.topicId}`">
+              {{ exam.title }}
+            </router-link>
+          </div>
+        </template>
         <template v-else>
           <div
           class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
@@ -320,6 +328,7 @@ export default {
   props: {},
   data() {
     return {
+      exams: [],
       selectedCateId: 1,
       selectedTopicId: 0,
       toggleSolutionText: true,
@@ -448,7 +457,6 @@ export default {
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
       this.selectedCateId = cateId
-      console.log("cate selected id", this.selectedCateId)
     },
     toggleNotifications() {
       this.$refs.notifications.scrollTo(0, 0);
@@ -478,19 +486,33 @@ export default {
           url: `http://localhost:8000/api/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
           method: "GET",
         });
-        if (data && data.data.exerciseList) {
+        if (data && data.data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
         }
       } catch (err) {
         console.log(err);
       }
     },
+    async getExams(id, currentPage = 1) {
+      try {
+        let data = await axios({
+          url: `http://localhost:8000/api/exams?topicId=${id}&currentPage=${currentPage}&pageSize=20`,
+          method: 'GET'
+        })
+        if(data && data.data && data.data.examList) {
+          this.exams = data.data.examList
+        }
+      } catch(err) {
+        console.log("err", err)
+      } 
+    },
     getExercisesByTopic(id) {
       this.selectedTopicId = id
-      this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
-    },
-    getExerciseByPage() {
-      console.log("crrrrr", this.current);
+      if(this.selectedCateId !== 3) {
+        this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
+      } else {
+        this.getExams(this.selectedTopicId, this.current)
+      }
     },
   },
   created() {},
