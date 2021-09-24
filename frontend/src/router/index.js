@@ -3,12 +3,23 @@ import Home from '../components/HelloWorld.vue'
 import Admin from '../components/Admin.vue'
 import Editor from '../components/Editor.vue'
 import ExamDetail from '../components/ExamDetail.vue'
+import Index from '../components/index.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home, 
+    children: [
+      {
+        path: '',
+        component: Index
+      },
+      {
+        path: 'exam/:id',
+        component: ExamDetail
+      }
+    ]
   },
   {
     path: '/admin',
@@ -20,11 +31,6 @@ const routes = [
     name: 'Editor',
     component: Editor
   },
-  {
-    path: '/exam/:id',
-    name: 'ExamDetail',
-    component: ExamDetail
-  }
 ]
 
 const router = createRouter({

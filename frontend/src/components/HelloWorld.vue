@@ -260,8 +260,9 @@
         </div>
       </div>
     </aside>
+    <router-view @getExer="retrieveExercise" :exercises="exercises" :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :total="total" :exams="exams"></router-view>
 
-    <main class="pt-8 md:pl-64">
+    <!-- <main class="pt-8 md:pl-64">
       <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
         BÀI TẬP VÀ LỜI GIẢI
       </h1>
@@ -298,7 +299,6 @@
         </div>
         </template>
         <template v-else-if="this.selectedCateId === 3">
-          <!-- LIST DE THI THPT NAM -->
           <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
             <router-link target='_blank' class="text-left" :to="`/exam/${exam.topicId}`">
               {{ exam.title }}
@@ -310,31 +310,32 @@
           class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
         >Không tìm thấy bài tập nào!</div>
         </template>
-        <!-- pagination -->
         <a-pagination 
           v-if="exercises && exercises.length > 0"
           :current="current" :total="exercises.length" @change="onChange"
         />
       </div>
-    </main>
+    </main> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Index from './index.vue'
 
 export default {
   name: "Home",
   props: {},
   data() {
     return {
+      total: 0,
       exams: [],
       selectedCateId: 1,
       selectedTopicId: 0,
-      toggleSolutionText: true,
-      selectedSolution: 0,
-      isShowSolution: false,
-      current: 1,
+      // toggleSolutionText: true,
+      // selectedSolution: 0,
+      // isShowSolution: false,
+      // current: 1,
       textSearch: "",
       exercises: [],
       isNotificationsOpen: false,
@@ -433,20 +434,25 @@ export default {
     };
   },
   methods: {
+    retrieveExercise(payload) {
+      console.log("payload", payload)
+      let {current, topicId, cateId} = payload
+      this.getExercises(topicId, cateId, this.textSearch, current)
+    },
     searchExercises() {
       this.getExercises(this.selectedTopicId, this.selectedCateId, this.textSearch, 1)
     },
-    onChange(current) {
-      this.current = current;
-      this.getExercises(this.selectedTopicId, this.selectedCateId, "", current)
-    },
-    toggleSolution(exerciseId) {
-      this.selectedSolution = exerciseId;
-      this.isShowSolution = !this.isShowSolution;
-      this.toggleSolutionSelectedText = this.isShowSolution 
-        ? "Ẩn lời giải"
-        : "Xem lời giải";
-    },
+    // onChange(current) {
+    //   this.current = current;
+    //   this.getExercises(this.selectedTopicId, this.selectedCateId, "", current)
+    // },
+    // toggleSolution(exerciseId) {
+    //   this.selectedSolution = exerciseId;
+    //   this.isShowSolution = !this.isShowSolution;
+    //   this.toggleSolutionSelectedText = this.isShowSolution 
+    //     ? "Ẩn lời giải"
+    //     : "Xem lời giải";
+    // },
 
     showSelectedClass(id) {
       let idx = this.listShow.findIndex((cat) => cat.categoryId === id);
@@ -488,6 +494,7 @@ export default {
         });
         if (data && data.data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
+          this.total = data.data.total
         }
       } catch (err) {
         console.log(err);
@@ -523,9 +530,9 @@ export default {
     await this.getExercises(this.selectedTopicId, this.selectedCateId,'', 1);
     this.showSelectedClass(1);
     this.listTopic = this.listShow[0].topicList;
-    this.toggleSolutionText = this.toggleSolutionText
-      ? "Xem lời giải"
-      : "Ẩn lời giải";
+    // this.toggleSolutionText = this.toggleSolutionText
+    //   ? "Xem lời giải"
+    //   : "Ẩn lời giải";
   },
   watch: {
     isNotificationsOpen: function(isOpen) {
@@ -585,15 +592,6 @@ export default {
   .search-bar {
     display: none;
   }
-}
-
-.btn-answer {
- width: 100px;
-}
-.btn-answer:focus {
-  outline: none;
-  background: orange;
-  color: #1F2937;
 }
 
 .selected-topic {
