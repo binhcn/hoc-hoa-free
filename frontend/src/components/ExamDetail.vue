@@ -1,23 +1,27 @@
 <template>
   <main class="pt-8 md:pl-64">
-    <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
-      {{ examInfo.title }}
+    <div class="flex justify-start items-center">
+    </div>
+    <h1 v-html="examInfo.title" class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
+      
     </h1>
+    
     <div class="my-8">
       <a
-      :href="`http://localhost:8000/api/download/${examInfo.examFile}`"
+      :href="`${DOMAIN}/download/${examInfo.examFile}`"
       download
     >
       DOWNLOAD ĐỀ THI
     </a>
     </div>
     <img
-      :src="`http://localhost:8000/api/images/${examInfo.examImage}`"
+      v-if="examInfo.examImage"
+      :src="`${DOMAIN}/images/${examInfo.examImage || 1}`"
       class="w-full"
     />
     <div class="my-8">
       <a
-      :href="`http://localhost:8000/api/download/${examInfo.examFile}`"
+      :href="`${DOMAIN}/download/${examInfo.examFile}`"
       download
     >
       DOWNLOAD ĐỀ THI
@@ -27,9 +31,12 @@
 </template>
 <script>
 import axios from "axios";
+import {DOMAIN} from '../utils/common'
+
 export default {
   data() {
     return {
+      DOMAIN: DOMAIN,
       examInfo: {},
     };
   },
@@ -40,7 +47,7 @@ export default {
     async getExam() {
       try {
         let data = await axios({
-          url: `http://localhost:8000/api/exams/${this.$route.params.id}`,
+          url: `${DOMAIN}/exams/${this.$route.params.id}`,
           method: "GET",
         });
         if (data && data.data) {
@@ -53,4 +60,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style scoped>
+.btn-return {
+  text-decoration: underline;
+}
+.btn-return:focus {
+  outline: none;
+}
+</style>

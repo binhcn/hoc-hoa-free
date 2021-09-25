@@ -55,7 +55,6 @@
 
                 <!-- Extract: menu_items -->
                 <div class="mt-4">
-                  <!-- TODO: add group here and group-hover to the shevron icon to show it only when the group is hovered -->
                   <a
                     v-for="(topic, idx) in listTopic"
                     :key="idx"
@@ -261,67 +260,13 @@
       </div>
     </aside>
     <router-view @getExer="retrieveExercise" :exercises="exercises" :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :total="total" :exams="exams"></router-view>
-
-    <!-- <main class="pt-8 md:pl-64">
-      <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
-        BÀI TẬP VÀ LỜI GIẢI
-      </h1>
-
-      <div class="p-4">
-        <template v-if="exercises.length > 0 && this.selectedCateId !== 3">
-          <div
-          v-for="(exercise, idx) in exercises"
-          :key="idx"
-          class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
-        >
-          <strong>Câu {{ idx + 1 }}</strong>
-          <p class="text-sm text-left font-normal">
-            <span :innerHTML="exercise.question">
-              </span>
-              <div v-if="exercise.questionImage">
-                <img :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"/>
-              </div>
-          </p>
-          <div class="flex justify-end pr-10">
-            <button
-              @click="() => toggleSolution(exercise.id)"
-              class="btn-answer text-xs font-bold px-4 py-2 mr-2 text-yellow-400 bg-gray-700 rounded-md"
-            >
-              {{ selectedSolution == exercise.id ? toggleSolutionSelectedText : toggleSolutionText}}
-            </button>
-          </div>
-          <div v-if="isShowSolution && selectedSolution == exercise.id">
-            <img
-              :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"
-              :alt="exercise.solutionImage"
-            />
-          </div>
-        </div>
-        </template>
-        <template v-else-if="this.selectedCateId === 3">
-          <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
-            <router-link target='_blank' class="text-left" :to="`/exam/${exam.topicId}`">
-              {{ exam.title }}
-            </router-link>
-          </div>
-        </template>
-        <template v-else>
-          <div
-          class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
-        >Không tìm thấy bài tập nào!</div>
-        </template>
-        <a-pagination 
-          v-if="exercises && exercises.length > 0"
-          :current="current" :total="exercises.length" @change="onChange"
-        />
-      </div>
-    </main> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Index from './index.vue'
+import {DOMAIN} from '../utils/common'
 
 export default {
   name: "Home",
@@ -332,10 +277,6 @@ export default {
       exams: [],
       selectedCateId: 1,
       selectedTopicId: 0,
-      // toggleSolutionText: true,
-      // selectedSolution: 0,
-      // isShowSolution: false,
-      // current: 1,
       textSearch: "",
       exercises: [],
       isNotificationsOpen: false,
@@ -435,25 +376,12 @@ export default {
   },
   methods: {
     retrieveExercise(payload) {
-      console.log("payload", payload)
       let {current, topicId, cateId} = payload
       this.getExercises(topicId, cateId, this.textSearch, current)
     },
     searchExercises() {
       this.getExercises(this.selectedTopicId, this.selectedCateId, this.textSearch, 1)
     },
-    // onChange(current) {
-    //   this.current = current;
-    //   this.getExercises(this.selectedTopicId, this.selectedCateId, "", current)
-    // },
-    // toggleSolution(exerciseId) {
-    //   this.selectedSolution = exerciseId;
-    //   this.isShowSolution = !this.isShowSolution;
-    //   this.toggleSolutionSelectedText = this.isShowSolution 
-    //     ? "Ẩn lời giải"
-    //     : "Xem lời giải";
-    // },
-
     showSelectedClass(id) {
       let idx = this.listShow.findIndex((cat) => cat.categoryId === id);
       if (idx != -1) this.selectedClass = this.listShow[idx].title;
@@ -475,7 +403,7 @@ export default {
     async getData() {
       try {
         let data = await axios({
-          url: "http://localhost:8000/api/structure",
+          url: `${DOMAIN}/structure`,
           method: "GET",
         });
         if (data && data.data.structure) {
@@ -489,7 +417,7 @@ export default {
       try {
         this.selectedTopicId = topicId
         let data = await axios({
-          url: `http://localhost:8000/api/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
+          url: `${DOMAIN}/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
           method: "GET",
         });
         if (data && data.data && data.data.exerciseList) {
@@ -503,11 +431,12 @@ export default {
     async getExams(id, currentPage = 1) {
       try {
         let data = await axios({
-          url: `http://localhost:8000/api/exams?topicId=${id}&currentPage=${currentPage}&pageSize=20`,
+          url: `${DOMAIN}/exams?topicId=${id}&currentPage=${currentPage}&pageSize=20`,
           method: 'GET'
         })
         if(data && data.data && data.data.examList) {
           this.exams = data.data.examList
+          this.total = data.data.total
         }
       } catch(err) {
         console.log("err", err)
@@ -517,8 +446,11 @@ export default {
       this.selectedTopicId = id
       if(this.selectedCateId !== 3) {
         this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
+        console.log("list khac 3")
       } else {
         this.getExams(this.selectedTopicId, this.current)
+        console.log("THPT")
+
       }
     },
   },
@@ -530,9 +462,6 @@ export default {
     await this.getExercises(this.selectedTopicId, this.selectedCateId,'', 1);
     this.showSelectedClass(1);
     this.listTopic = this.listShow[0].topicList;
-    // this.toggleSolutionText = this.toggleSolutionText
-    //   ? "Xem lời giải"
-    //   : "Ẩn lời giải";
   },
   watch: {
     isNotificationsOpen: function(isOpen) {

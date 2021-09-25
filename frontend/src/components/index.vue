@@ -16,7 +16,7 @@
             <span :innerHTML="exercise.question">
               </span>
               <div v-if="exercise.questionImage">
-                <img :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"/>
+                <img :src="`${DOMAIN}/images/${exercise.solutionImage}`"/>
               </div>
           </p>
           <div class="flex justify-end pr-10">
@@ -29,7 +29,7 @@
           </div>
           <div v-if="isShowSolution && selectedSolution == exercise.id">
             <img
-              :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"
+              :src="`${DOMAIN}/images/${exercise.solutionImage}`"
               :alt="exercise.solutionImage"
             />
           </div>
@@ -37,9 +37,9 @@
         </template>
         <template v-else-if="this.selectedCateId === 3">
           <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
-            <router-link target='_blank' class="text-left" :to="`/exam/${exam.id}`">
-              {{ exam.title }}
+            <router-link v-html="exam.title" target='_blank' class="text-left" :to="`/exam/${exam.id}`">
             </router-link>
+            <!-- <button class="text-blue-500 btn-exam" @click="$router.push(`/exam/${exam.id}`)" v-html="exam.title"></button> -->
           </div>
         </template>
         <template v-else>
@@ -55,6 +55,8 @@
     </main>
 </template>
 <script>
+import {DOMAIN} from '../utils/common'
+
 export default {
     props: {
         exams: {
@@ -80,6 +82,7 @@ export default {
     },
     data() {
         return {
+            DOMAIN: DOMAIN,
             toggleSolutionText: true,
             selectedSolution: 0,
             isShowSolution: false,
@@ -118,5 +121,11 @@ export default {
   outline: none;
   background: orange;
   color: #1F2937;
+}
+.btn-exam {
+  text-decoration: underline;
+}
+.btn-exam:focus {
+  outline: none;
 }
 </style>

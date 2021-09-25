@@ -11,18 +11,15 @@
     <!-- ListTable -->
     <div v-if="!isShowTable">
         <TableAdmin />
-        <!-- <TextEditor /> -->
     </div>
   </div>
 </template>
 <script>
 import TableAdmin from "./TableAdmin.vue";
-// import TextEditor from "./TextEditor.vue";
 
 export default {
   name: "Admin",
   components: {
-    // TextEditor,
     TableAdmin,
   },
   data() {

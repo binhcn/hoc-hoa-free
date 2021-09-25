@@ -117,32 +117,35 @@
     overflow-y: auto;"
               >
                 <div>
-                  <label class="text-blue-500 font-bold">Nhập câu hỏi dạng text</label>
+                  <label class="text-blue-500 font-bold"> {{ selectedInfo.cateId !== 3 ? `Nhập câu hỏi dạng text ` : `Nhập tiêu đề đề thi` }} </label>
                 <Editor :question="question" @inputData="updateMessage" />
                 </div>
 
+
                 <!-- IMAGE QUESTION -->
                 <div>
-                  <label class="text-blue-500 font-bold">Tải câu hỏi dạng hình ảnh</label><br />
+                  <label class="text-blue-500 font-bold">
+                    {{ selectedInfo.cateId !== 3 ? `Tải hình ảnh câu hỏi dạng` : `Tải hình ảnh đề thi` }} </label><br />
                   <div class="mt-4" v-if="!questionImg">
                   <input type="file" @change="onFileQuestionChange">
                 </div>
                 <div v-else>
                   <img :src="questionImg" />
                   <button 
-                  class="mt-4 text-red-500 font-bold" @click="removeImage(0)">Xóa câu hỏi</button>
+                  class="mt-4 text-red-500 font-bold" @click="removeImage(0)"> {{ selectedInfo.cateId !== 3 ? `Xóa hình ảnh câu hỏi` : `Xóa hình ảnh đề thi` }} </button>
                 </div>
                 </div>
                 <!-- IMAGE SOLUTON -->
                 <div class="mt-4">
-                  <label class="text-blue-500 font-bold">Tải lời giải</label><br />
+                  <label class="text-blue-500 font-bold">
+                    {{ selectedInfo.cateId !== 3 ? `Tải lời giải` : `Tải file đề thi` }} </label><br />
                 <div class="mt-4" v-if="!image">
                   <input type="file" @change="onFileSolutionChange">
                 </div>
                 <div v-else>
                   <img :src="image" />
                   <button 
-                  class="mt-4 text-red-500 font-bold" @click="removeImage(1)">Xóa lời giải</button>
+                  class="mt-4 text-red-500 font-bold" @click="removeImage(1)">{{ selectedInfo.cateId !== 3 ? `Xóa lời giải` : `Xóa file đề thi` }}</button>
                 </div>
                 </div>
                 
@@ -176,7 +179,7 @@
       <table class="table-fill">
         <thead>
           <tr>
-            <th className="text-left w-16">ID</th>
+            <th className="text-left w-16">STT</th>
             <th className="text-left">Bài tập</th>
             <th className="text-left w-40">Lời giải</th>
             <th className="text-left w-20">Hành động</th>
@@ -186,19 +189,19 @@
           <template v-if="exercises?.length > 0" >
             <template v-for="(exercise, idx) in exercises">
             <tr>
-            <td className="text-left">{{ exercise.id }}</td>
+            <td className="text-left">{{ idx + 1 }}</td>
             <td className="text-left">
               <div>
-              <span :innerHTML="exercise.question">
+              <span :innerHTML="selectedInfo.cateId !== 3 ? exercise.question : exercise.title">
               </span>
               </div>
               <div v-if="exercise.questionImage">
-                <img :src="`http://localhost:8000/api/images/${exercise.solutionImage}`"/>
+                <img :src="`${DOMAIN}/images/${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`"/>
               </div>
             </td>
             <td className="">
-              <a target="blank" :href="`http://localhost:8000/api/images/${exercise.solutionImage}`">
-                 <img class="zoom-solution" style="width: 50px; height: 50px;" :src="`http://localhost:8000/api/images/${exercise.solutionImage}`" alt="..." />
+              <a target="blank" :href="`${DOMAIN}/${selectedInfo.cateId !== 3 ? 'images' : 'download'}/${ selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`">
+                 <img class="zoom-solution" style="width: 50px; height: 50px;" :src="`${DOMAIN}/images/${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examImage}`" alt="..." />
               </a>
             </td>
             <td className="text-left">
@@ -236,6 +239,7 @@
 // import QuillEditor from './Editor.vue'
 import axios from 'axios'
 import Editor from './Editor.vue'
+import {DOMAIN} from '../utils/common'
 
 export default {
   components: {
@@ -243,6 +247,8 @@ export default {
   },
   data() {
     return {
+      DOMAIN: DOMAIN,
+      titleExam: '',
       current: 1,
       questionImage: null,
       solutionImage: null,
@@ -359,15 +365,23 @@ export default {
   methods: {
     onChange(current) {
       this.current = current;
-      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", current)
+      if(this.selectedInfo.cateId !== 3) {
+          this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+        } else {
+          this.getExams(this.selectedInfo.topicId, this.current)
+        } 
     },
     async deleteExercise(id) {
       try {
         let data = await axios({
-          url: `http://localhost:8000/api/exercises/${id}`,
+          url: `${DOMAIN}/${this.selectedInfo.cateId !== 3 ? 'exercises' : 'exams'}/${id}`,
           method: 'DELETE'
         })
-        this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1)
+        if(this.selectedInfo.cateId !== 3) {
+          this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+        } else {
+          this.getExams(this.selectedInfo.topicId, this.current)
+        } 
       } catch(err) {
         console.log("err", err)
       }
@@ -398,7 +412,6 @@ export default {
       reader.readAsDataURL(file);
     },
     removeImage(id) {
-      // id === 1 (image)
       if(id) this.image = '';
       else this.questionImg = '';
     },
@@ -413,22 +426,23 @@ export default {
       this.questionImg = ''
     },
     filterExam() {
-      console.log("cateId", this.selectedInfo.cateId)
-      console.log("topicId", this.selectedInfo.topicId)
-      this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1);
+      if(this.selectedInfo.cateId !== 3) {
+        this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+      } else {
+        this.getExams(this.selectedInfo.topicId, this.current)
+      } 
     },
     selectTopic(topicId) {
       this.selectedInfo.topicId = topicId;
       let idx = this.lisTopic.findIndex((topic) => topic.id == topicId);
       if (idx != -1) this.selectedTopic = this.lisTopic[idx].title;
-      console.log("after select topic", this.selectedInfo.topicId)
 
     },
     selectCate(cateId) {
+      this.exercises = []
       let idx = this.listShow.findIndex((cate) => cate.categoryId == cateId);
       if (idx != -1) this.lisTopic = this.listShow[idx].topicList;
       this.selectedInfo.cateId = cateId;
-      console.log("after select cate", this.selectedInfo.cateId)
       this.selectedCate = this.listShow[idx].title;
     },
     showModal() {
@@ -440,7 +454,7 @@ export default {
      async getData() {
       try {
         let data = await axios({
-          url: "http://localhost:8000/api/structure",
+          url: `${DOMAIN}/structure`,
           method: "GET",
         });
         if (data && data.data.structure) {
@@ -453,34 +467,65 @@ export default {
     async getExercises(topicId, cateId, textSearch = "", currentPage = 1) {
       try {
         let data = await axios({
-          url: `http://localhost:8000/api/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
+          url: `${DOMAIN}/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
           method: "GET",
         });
         if (data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
-          console.log("exercise", this.exercises)
         }
       } catch (err) {
         console.log(err);
       }
     },
+    async getExams(topicId, currentPage = 1) {
+      try {
+        let data = await axios({
+          url: `${DOMAIN}/exams?topicId=${topicId}&currentPage${currentPage}=&pageSize=20`,
+          method: 'GET'
+        })
+        if(data && data.data && data.data.examList) {
+          this.exercises = data.data.examList
+        }
+      } catch(err) {
+        console.log("err", err)
+      }
+    },
     async saveChemistryExercise() {
       try {
-        const formData = new FormData();
-        formData.append('topicId', this.selectedInfo.topicId);
-        formData.append('categoryId', this.selectedInfo.cateId);
-        formData.append('question', this.question);
-        formData.append('questionImage', this.questionImage);
-        formData.append('solutionImage', this.solutionImage);
-        let data = await axios.post(
-          "http://localhost:8000/api/exercises",
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
+        let formData = new FormData();
+        if(this.selectedInfo.cateId !== 3) {
+          formData.append('topicId', this.selectedInfo.topicId);
+          formData.append('categoryId', this.selectedInfo.cateId);
+          formData.append('question', this.question);
+          formData.append('questionImage', this.questionImage);
+          formData.append('solutionImage', this.solutionImage);
+          let data = await axios.post(
+            `${DOMAIN}/exercises`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
             }
-          }
-        );
+          );
+          this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+        } else {
+          formData.append('topicId', this.selectedInfo.topicId);
+          formData.append('title', this.question);
+          formData.append('examImage', this.questionImage);
+          formData.append('examFile', this.solutionImage);
+          let data = await axios.post(
+            `${DOMAIN}/exams`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }
+          );
+          this.getExams(this.selectedInfo.topicId, this.current)
+        }
+        
       } catch(err) {
         console.log('err', err)
       }
@@ -489,9 +534,6 @@ export default {
 };
 </script>
 <style scoped>
-/* .zoom-solution:hover {
-  transform: scale(15); 
-} */
 .dropdown:hover .dropdown-menu {
   display: block;
   z-index: 10;
