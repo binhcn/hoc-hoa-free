@@ -196,12 +196,12 @@
               </span>
               </div>
               <div v-if="exercise.questionImage">
-                <img :src="`${DOMAIN}/images/${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`"/>
+                <img :src="`${FILE_DOMAIN}${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`"/>
               </div>
             </td>
             <td className="">
-              <a target="blank" :href="`${DOMAIN}/${selectedInfo.cateId !== 3 ? 'images' : 'download'}/${ selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`">
-                 <img class="zoom-solution" style="width: 50px; height: 50px;" :src="`${DOMAIN}/images/${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examImage}`" alt="..." />
+              <a target="blank" :href="`${FILE_DOMAIN}${ selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examFile}`">
+                 <img class="zoom-solution" style="width: 50px; height: 50px;" :src="`${FILE_DOMAIN}${selectedInfo.cateId !== 3 ? exercise.solutionImage : exercise.examImage}`" alt="..." />
               </a>
             </td>
             <td className="text-left">
@@ -239,7 +239,7 @@
 // import QuillEditor from './Editor.vue'
 import axios from 'axios'
 import Editor from './Editor.vue'
-import {DOMAIN} from '../utils/common'
+import {DOMAIN, FILE_DOMAIN} from '../utils/common'
 
 export default {
   components: {
@@ -248,6 +248,7 @@ export default {
   data() {
     return {
       DOMAIN: DOMAIN,
+      FILE_DOMAIN: FILE_DOMAIN,
       titleExam: '',
       current: 1,
       questionImage: null,

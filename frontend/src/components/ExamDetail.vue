@@ -8,7 +8,7 @@
     
     <div class="my-8">
       <a
-      :href="`${DOMAIN}/download/${examInfo.examFile}`"
+      :href="`${FILE_DOMAIN}${examInfo.examFile}`"
       download
     >
       DOWNLOAD ĐỀ THI
@@ -16,12 +16,12 @@
     </div>
     <img
       v-if="examInfo.examImage"
-      :src="`${DOMAIN}/images/${examInfo.examImage || 1}`"
+      :src="`${FILE_DOMAIN}${examInfo.examImage || 1}`"
       class="w-full"
     />
     <div class="my-8">
       <a
-      :href="`${DOMAIN}/download/${examInfo.examFile}`"
+      :href="`${FILE_DOMAIN}${examInfo.examFile}`"
       download
     >
       DOWNLOAD ĐỀ THI
@@ -31,12 +31,13 @@
 </template>
 <script>
 import axios from "axios";
-import {DOMAIN} from '../utils/common'
+import {DOMAIN, FILE_DOMAIN} from '../utils/common'
 
 export default {
   data() {
     return {
       DOMAIN: DOMAIN,
+      FILE_DOMAIN: FILE_DOMAIN,
       examInfo: {},
     };
   },

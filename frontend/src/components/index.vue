@@ -16,7 +16,7 @@
             <span :innerHTML="exercise.question">
               </span>
               <div v-if="exercise.questionImage">
-                <img :src="`${DOMAIN}/images/${exercise.solutionImage}`"/>
+                <img :src="`${FILE_DOMAIN}${exercise.solutionImage}`"/>
               </div>
           </p>
           <div class="flex justify-end pr-10">
@@ -29,7 +29,7 @@
           </div>
           <div v-if="isShowSolution && selectedSolution == exercise.id">
             <img
-              :src="`${DOMAIN}/images/${exercise.solutionImage}`"
+              :src="`${FILE_DOMAIN}${exercise.solutionImage}`"
               :alt="exercise.solutionImage"
             />
           </div>
@@ -55,7 +55,7 @@
     </main>
 </template>
 <script>
-import {DOMAIN} from '../utils/common'
+import {DOMAIN, FILE_DOMAIN} from '../utils/common'
 
 export default {
     props: {
@@ -83,6 +83,7 @@ export default {
     data() {
         return {
             DOMAIN: DOMAIN,
+            FILE_DOMAIN: FILE_DOMAIN,
             toggleSolutionText: true,
             selectedSolution: 0,
             isShowSolution: false,
