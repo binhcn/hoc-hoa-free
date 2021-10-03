@@ -16,7 +16,7 @@
             <span :innerHTML="exercise.question">
               </span>
               <div v-if="exercise.questionImage">
-                <img :src="`${FILE_DOMAIN}${exercise.solutionImage}`"/>
+                <img :src="`${FILE_DOMAIN}${exercise.questionImage}`"/>
               </div>
           </p>
           <div class="flex justify-end pr-10">
