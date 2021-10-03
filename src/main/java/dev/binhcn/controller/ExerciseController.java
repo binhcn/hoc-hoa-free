@@ -1,5 +1,6 @@
 package dev.binhcn.controller;
 
+import dev.binhcn.config.UploadFileConfig;
 import dev.binhcn.dto.CategoryAndTopic;
 import dev.binhcn.dto.CategoryAndTopicResponse;
 import dev.binhcn.dto.ExamHoaHocFreeResponse;
@@ -14,6 +15,7 @@ import dev.binhcn.repository.CategoryRepository;
 import dev.binhcn.repository.ExamRepository;
 import dev.binhcn.repository.ExerciseRepository;
 import dev.binhcn.repository.TopicRepository;
+import dev.binhcn.service.AmazonClient;
 import dev.binhcn.statics.Constant;
 import dev.binhcn.util.ExamUtil;
 import dev.binhcn.util.ExerciseUtil;
@@ -40,12 +42,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class Controller {
+public class ExerciseController {
 
   private final CategoryRepository categoryRepository;
   private final TopicRepository topicRepository;
   private final ExerciseRepository exerciseRepository;
-  private final ExamRepository examRepository;
+  private final AmazonClient amazonClient;
+  private final UploadFileConfig uploadFileConfig;
 
   @GetMapping("/structure")
   public ResponseEntity getCategoryAndTopic() {
@@ -82,10 +85,21 @@ public class Controller {
     exercise.setCategoryId(Integer.parseInt(categoryId));
     exercise.setCreatedAt(System.currentTimeMillis());
 
-    String solutionImageName = FileUtil.saveFile(solutionImageFile, Constant.IMAGE_DIR);
+    String solutionImageName;
+    if (uploadFileConfig.isUsingS3()) {
+      solutionImageName = amazonClient.uploadFile(solutionImageFile);
+    } else {
+      solutionImageName = FileUtil.saveFile(solutionImageFile, Constant.IMAGE_DIR);
+    }
     exercise.setSolutionImage(solutionImageName);
+
     if (Objects.nonNull(questionImageFile) && !questionImageFile.isEmpty()) {
-      String questionImageName = FileUtil.saveFile(questionImageFile, Constant.IMAGE_DIR);
+      String questionImageName;
+      if (uploadFileConfig.isUsingS3()) {
+        questionImageName = amazonClient.uploadFile(questionImageFile);
+      } else {
+        questionImageName = FileUtil.saveFile(questionImageFile, Constant.IMAGE_DIR);
+      }
       exercise.setQuestionImage(questionImageName);
     }
     Exercise response = exerciseRepository.save(exercise);
@@ -137,66 +151,6 @@ public class Controller {
   public ResponseEntity getExercise(@PathVariable("id") long id) {
     Exercise exercise = exerciseRepository.findById(id);
     ExerciseHoaHocFreeResponse response = ExerciseUtil.parseDetails(exercise);
-    return ResponseEntity.ok(response);
-  }
-
-  @PostMapping("/exams")
-  public ResponseEntity saveExam(String topicId, String title,
-      @RequestParam(value = "examImage") MultipartFile examImageFile,
-      @RequestParam("examFile") MultipartFile examFile) {
-
-    Exam exam = new Exam();
-    exam.setTitle(title);
-    exam.setTopicId(Integer.parseInt(topicId));
-    exam.setCreatedAt(System.currentTimeMillis());
-    String examImageName = FileUtil.saveFile(examImageFile, Constant.IMAGE_DIR);
-    exam.setExamImage(examImageName);
-    String examFilename = FileUtil.saveFile(examFile, Constant.FILE_DIR);
-    exam.setExamFile(examFilename);
-
-    Exam response = examRepository.save(exam);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
-
-  @GetMapping("/exams")
-  public ResponseEntity getExams(
-      @RequestParam(value = "topicId", required = false) String topicIdString,
-      @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
-      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-    int offset = pageSize * (currentPage - 1);
-    List<Exam> examList;
-    long total;
-    if (topicIdString.length() > 0) {
-      int topicId = Integer.parseInt(topicIdString);
-      examList = examRepository.findByTopicId(topicId, pageSize, offset);
-      total = examRepository.countByTopicId(topicId);
-    } else {
-      examList = examRepository.findAll(pageSize, offset);
-      total = examRepository.count();
-    }
-    int lastPage = -1;
-    if (pageSize > 0) {
-      lastPage = (int)Math.ceil((float)total / pageSize);
-    }
-    ExamListResponse response = new ExamListResponse();
-    response.setTotal(total);
-    response.setCurrentPage(currentPage);
-    response.setLastPage(lastPage);
-    response.setPageSize(pageSize);
-    response.setExamList(ExamUtil.parseDetailsList(examList));
-    return ResponseEntity.ok(response);
-  }
-
-  @DeleteMapping("/exams/{id}")
-  public ResponseEntity deleteExam(@PathVariable("id") long id) {
-    examRepository.deleteById(id);
-    return ResponseEntity.ok("Delete success");
-  }
-
-  @GetMapping("/exams/{id}")
-  public ResponseEntity getExam(@PathVariable("id") long id) {
-    Exam exam = examRepository.findById(id);
-    ExamHoaHocFreeResponse response = ExamUtil.parseDetails(exam);
     return ResponseEntity.ok(response);
   }
 }

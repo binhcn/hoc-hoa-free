@@ -1,7 +1,6 @@
 package dev.binhcn.statics;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

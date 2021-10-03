@@ -3,15 +3,15 @@ spring:
   application:
     name: hoc-hoa-free
   datasource:
-    url: jdbc:mysql://hoc-hoa-free.cmtyz3ymyhr2.ap-southeast-1.rds.amazonaws.com:3306/hoc_hoa_free
-    username: admin
-    password: binhcaong
-    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hoc_hoa_free
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximumPoolSize: 10
+      maximum-pool-size: 10
   servlet:
     multipart:
-      maxFileSize: 30MB
+      max-file-size: 30MB
 
 uploadFile:
   usingS3: true
