@@ -35,4 +35,9 @@ public class FileUtil {
     FileUtil.saveFile(parentFolder, fileName, multipartFile);
     return fileName;
   }
+
+  public static String getFileExt(MultipartFile file) {
+    String fileName = file.getOriginalFilename();
+    return fileName.substring(fileName.indexOf("."));
+  }
 }

@@ -47,17 +47,13 @@ public class AmazonClient {
             .withCannedAcl(CannedAccessControlList.PublicRead));
     }
 
-    public String uploadFile(MultipartFile multipartFile) {
-        String fileUrl = "";
+    public void uploadFile(MultipartFile multipartFile, String fileName) {
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = generateFileName(multipartFile);
-            fileUrl = uploadFileConfig.getEndpointUrl() + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileUrl;
     }
 }

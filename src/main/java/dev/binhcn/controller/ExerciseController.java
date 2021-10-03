@@ -3,21 +3,16 @@ package dev.binhcn.controller;
 import dev.binhcn.config.UploadFileConfig;
 import dev.binhcn.dto.CategoryAndTopic;
 import dev.binhcn.dto.CategoryAndTopicResponse;
-import dev.binhcn.dto.ExamHoaHocFreeResponse;
-import dev.binhcn.dto.ExamListResponse;
 import dev.binhcn.dto.ExerciseHoaHocFreeResponse;
 import dev.binhcn.dto.ExerciseListResponse;
 import dev.binhcn.model.Category;
-import dev.binhcn.model.Exam;
 import dev.binhcn.model.Exercise;
 import dev.binhcn.model.Topic;
 import dev.binhcn.repository.CategoryRepository;
-import dev.binhcn.repository.ExamRepository;
 import dev.binhcn.repository.ExerciseRepository;
 import dev.binhcn.repository.TopicRepository;
 import dev.binhcn.service.AmazonClient;
 import dev.binhcn.statics.Constant;
-import dev.binhcn.util.ExamUtil;
 import dev.binhcn.util.ExerciseUtil;
 import dev.binhcn.util.FileUtil;
 import java.util.ArrayList;
@@ -85,20 +80,23 @@ public class ExerciseController {
     exercise.setCategoryId(Integer.parseInt(categoryId));
     exercise.setCreatedAt(System.currentTimeMillis());
 
-    String solutionImageName;
+    String postfixSolution = FileUtil.getFileExt(solutionImageFile);
+    String prefix = categoryId + "-" + topicId + "-" + exercise.getCreatedAt();
+    String solutionImageName = prefix + "-solution" + postfixSolution;
     if (uploadFileConfig.isUsingS3()) {
-      solutionImageName = amazonClient.uploadFile(solutionImageFile);
+      amazonClient.uploadFile(solutionImageFile, solutionImageName);
     } else {
-      solutionImageName = FileUtil.saveFile(solutionImageFile, Constant.IMAGE_DIR);
+      FileUtil.saveFile(solutionImageFile, Constant.IMAGE_DIR);
     }
     exercise.setSolutionImage(solutionImageName);
 
     if (Objects.nonNull(questionImageFile) && !questionImageFile.isEmpty()) {
-      String questionImageName;
+      String postfixQuestion = FileUtil.getFileExt(questionImageFile);
+      String questionImageName = prefix + "-question" + postfixQuestion;
       if (uploadFileConfig.isUsingS3()) {
-        questionImageName = amazonClient.uploadFile(questionImageFile);
+        amazonClient.uploadFile(questionImageFile, questionImageName);
       } else {
-        questionImageName = FileUtil.saveFile(questionImageFile, Constant.IMAGE_DIR);
+        FileUtil.saveFile(questionImageFile, Constant.IMAGE_DIR);
       }
       exercise.setQuestionImage(questionImageName);
     }
@@ -116,11 +114,11 @@ public class ExerciseController {
     int offset = pageSize * (currentPage - 1);
     List<Exercise> exerciseList;
     long total;
-    if (topicIdString.length() > 0) {
+    if (topicIdString != null && topicIdString.length() > 0) {
       int topicId = Integer.parseInt(topicIdString);
       exerciseList = exerciseRepository.findByTopicId(topicId, pageSize, offset);
       total = exerciseRepository.countByTopicId(topicId);
-    } else if(categoryIdString.length() > 0) {
+    } else if(categoryIdString != null && categoryIdString.length() > 0) {
       int categoryId = Integer.parseInt(categoryIdString);
       exerciseList = exerciseRepository.findByCategoryId(categoryId, pageSize, offset);
       total = exerciseRepository.countByCategoryId(categoryId);

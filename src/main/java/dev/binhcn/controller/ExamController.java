@@ -1,5 +1,6 @@
 package dev.binhcn.controller;
 
+import dev.binhcn.config.UploadFileConfig;
 import dev.binhcn.dto.CategoryAndTopic;
 import dev.binhcn.dto.CategoryAndTopicResponse;
 import dev.binhcn.dto.ExamHoaHocFreeResponse;
@@ -45,6 +46,7 @@ public class ExamController {
 
   private final ExamRepository examRepository;
   private final AmazonClient amazonClient;
+  private final UploadFileConfig uploadFileConfig;
 
   @PostMapping("/exams")
   public ResponseEntity saveExam(String topicId, String title,
@@ -55,11 +57,21 @@ public class ExamController {
     exam.setTitle(title);
     exam.setTopicId(Integer.parseInt(topicId));
     exam.setCreatedAt(System.currentTimeMillis());
-    String examImageName = FileUtil.saveFile(examImageFile, Constant.IMAGE_DIR);
-    exam.setExamImage(examImageName);
-    String examFilename = FileUtil.saveFile(examFile, Constant.FILE_DIR);
-    exam.setExamFile(examFilename);
 
+    String postfixImage = FileUtil.getFileExt(examImageFile);
+    String postfixExam = FileUtil.getFileExt(examFile);
+    String prefix = "3-" + topicId + "-" + exam.getCreatedAt();
+    String questionImageName = prefix + "-question" + postfixImage;
+    String examFilename = prefix + "-exam" + postfixExam;
+    if (uploadFileConfig.isUsingS3()) {
+      amazonClient.uploadFile(examImageFile, questionImageName);
+      amazonClient.uploadFile(examFile, examFilename);
+    } else {
+      FileUtil.saveFile(examImageFile, Constant.IMAGE_DIR);
+      FileUtil.saveFile(examFile, Constant.FILE_DIR);
+    }
+    exam.setExamImage(questionImageName);
+    exam.setExamFile(examFilename);
     Exam response = examRepository.save(exam);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
