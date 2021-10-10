@@ -1,15 +1,16 @@
 <template>
   <div>
-    <!-- Confirm  -->
-    <!-- <div v-if="!isConfirm">
+    <!-- Only admin can access this page -->
+    <div v-if="!isShowTable">
       <div class="text-red-500 py-2">Vui lòng nhập mã xác thực để truy cập</div>
-      <input v-model="authCode" class="auth-admin px-4 py-2" />
-      <button class="text-xl ml-2 btn-auth-admin" @click="onConfirm()">
+      <input @keypress.enter="onConfirm()" type="password" v-model="authCode" class="auth-admin px-4 py-2" />
+      <br />
+      <button class="border-2 mt-4 border-green-600 rounded-md px-4 py-2 text-xl ml-2 btn-auth-admin" @click="onConfirm()">
         Xác thực
       </button>
-    </div> -->
+    </div>
     <!-- ListTable -->
-    <div v-if="!isShowTable">
+    <div v-if="isShowTable">
         <TableAdmin />
     </div>
   </div>
@@ -25,16 +26,14 @@ export default {
   data() {
     return {
       authCode: "",
-      isConfirm: false,
       isShowTable: false,
     };
   },
   methods: {
     onConfirm() {
-      if (this.authCode != "admin") {
+      if (this.authCode != "!@#admin$%^Tin&*(") {
         this.$router.push("/");
       } else {
-        this.isConfirm = true;
         this.isShowTable = true;
       }
     },

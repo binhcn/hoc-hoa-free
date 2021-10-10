@@ -1,5 +1,5 @@
 <template>
-  <main class="pt-8 md:pl-64">
+  <div>
     <div class="flex justify-start items-center">
     </div>
     <h1 v-html="examInfo.title" class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
@@ -27,13 +27,24 @@
       DOWNLOAD ĐỀ THI
     </a>
     </div>
-  </main>
+  </div>
 </template>
 <script>
 import axios from "axios";
 import {DOMAIN, FILE_DOMAIN} from '../utils/common'
 
 export default {
+  props: {
+    examId: Number,
+    selectedCateId: {
+      type: Number,
+      default: 1
+    },
+    selectedTopicId: {
+      type: Number,
+      default: 1
+    },
+  },
   data() {
     return {
       DOMAIN: DOMAIN,
@@ -42,17 +53,23 @@ export default {
     };
   },
   async mounted() {
-    await this.getExam();
+    await this.getExam(this.examId);
   },
   methods: {
-    async getExam() {
+    async getExam(id) {
       try {
         let data = await axios({
-          url: `${DOMAIN}/exams/${this.$route.params.id}`,
+          url: `${DOMAIN}/exams/${id}`,
           method: "GET",
         });
         if (data && data.data) {
           this.examInfo = data.data;
+          let params = {
+            capbac: this.selectedCateId,
+            chude: this.selectedTopicId,
+            dethi: id
+          }
+          this.$router.push({ path: location.pathname, query: params })
         }
       } catch (err) {
         console.log("err", err);

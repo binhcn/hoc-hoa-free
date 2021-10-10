@@ -1,23 +1,24 @@
 <template>
     <main class="pt-8 md:pl-64">
-      <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
-        BÀI TẬP VÀ LỜI GIẢI
-      </h1>
-
-      <div class="p-4">
-        <template v-if="exercises.length > 0 && this.selectedCateId !== 3">
+      <!-- 1. SHOW LIST EXERCISES -->
+      <div v-if="selectedCateId !== 3" class="p-4">
+        <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
+          BÀI TẬP VÀ LỜI GIẢI 
+        </h1>
+        <!-- 1.1 have exercies -->
+        <template v-if="exercises.length > 0">
           <div
           v-for="(exercise, idx) in exercises"
           :key="idx"
           class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
         >
-          <strong>Câu {{ idx + 1 }}</strong>
+          <strong>Câu {{ (current -1)*10 + idx + 1 }}</strong>
           <p class="text-sm text-left font-normal">
             <span :innerHTML="exercise.question">
-              </span>
-              <div v-if="exercise.questionImage">
-                <img :src="`${FILE_DOMAIN}${exercise.questionImage}`"/>
-              </div>
+            </span>
+            <div v-if="exercise.questionImage">
+              <img :src="`${FILE_DOMAIN}${exercise.questionImage}`"/>
+            </div>
           </p>
           <div class="flex justify-end pr-10">
             <button
@@ -34,30 +35,50 @@
             />
           </div>
         </div>
+         <a-pagination 
+          v-if="exercises && exercises.length > 0"
+          :current="current" :total="total" @change="onChange"
+          />
         </template>
-        <template v-else-if="this.selectedCateId === 3">
-          <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
-            <router-link v-html="exam.title" target='_blank' class="text-left" :to="`/exam/${exam.id}`">
-            </router-link>
-            <!-- <button class="text-blue-500 btn-exam" @click="$router.push(`/exam/${exam.id}`)" v-html="exam.title"></button> -->
-          </div>
-        </template>
+
+        <!-- 1.2 no exercies -->
         <template v-else>
           <div
           class="mt-4 p-4 bg-white rounded shadow font-semibold text-center hover:shadow-md mb-8"
         >Không tìm thấy bài tập nào!</div>
         </template>
-        <a-pagination 
-          v-if="exercises && exercises.length > 0"
+      </div>
+      <!-- 2. SHOW LIST EXAMS -->
+      <div v-else>
+        <!-- have exams -->
+        <template v-if="isTotalList">
+          <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
+          DANH SÁCH ĐỀ THI
+          </h1>
+          <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
+            <button class="text-blue-500 btn-exam" 
+            @click="showListExam(exam.id)" v-html="exam.title"></button>
+          </div>
+          <a-pagination 
+          v-if="exams && exams.length > 0"
           :current="current" :total="total" @change="onChange"
-        />
+          />
+        </template>
+        <template v-else>
+          <ExamDetail :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :examId="examId"/>
+        </template>
+        <!-- no exams -->
       </div>
     </main>
 </template>
 <script>
 import {DOMAIN, FILE_DOMAIN} from '../utils/common'
+import ExamDetail from './ExamDetail.vue'
 
 export default {
+    components : {
+      ExamDetail,
+    },
     props: {
         exams: {
             type: Array,
@@ -82,6 +103,8 @@ export default {
     },
     data() {
         return {
+            examId: null,
+            isTotalList: true, // false: detail exam
             DOMAIN: DOMAIN,
             FILE_DOMAIN: FILE_DOMAIN,
             toggleSolutionText: true,
@@ -90,33 +113,41 @@ export default {
             current: 1,
         }
     },
+    watch: {
+      selectedCateId: function() {
+        if(this.selectedCateId !== 3) this.isTotalList = true
+      }
+    },
     mounted() {
-        console.log("err", this.exercises)
         this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
     },
     methods: {
-        toggleSolution(exerciseId) {
-            this.selectedSolution = exerciseId;
-            this.isShowSolution = !this.isShowSolution;
-            this.toggleSolutionSelectedText = this.isShowSolution 
-                ? "Ẩn lời giải"
-                : "Xem lời giải";
-        },
-        onChange(current) {
-            this.current = current;
-            let payload = {
-                current : current,
-                topicId: this.selectedTopicId,
-                cateId: this.selectedCateId
-            }
-            this.$emit('getExer', payload)
-        },
+      showListExam(id) {
+        this.examId = id
+        this.isTotalList = false
+      },
+      toggleSolution(exerciseId) {
+        this.selectedSolution = exerciseId;
+        this.isShowSolution = !this.isShowSolution;
+        this.toggleSolutionSelectedText = this.isShowSolution 
+          ? "Ẩn lời giải"
+          : "Xem lời giải";
+      },
+      onChange(current) {
+        this.current = current;
+        let payload = {
+          current : current,
+          topicId: this.selectedTopicId,
+          cateId: this.selectedCateId
+      }
+        this.$emit('getExer', payload)
+      },
     }
 }
 </script>
 <style scoped>
 .btn-answer {
-  width: 100px;
+  width: 120px;
 }
 .btn-answer:focus {
   outline: none;

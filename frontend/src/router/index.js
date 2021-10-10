@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../components/HelloWorld.vue'
 import Admin from '../components/Admin.vue'
 import Editor from '../components/Editor.vue'
-import ExamDetail from '../components/ExamDetail.vue'
 import Index from '../components/index.vue'
 
 const routes = [
@@ -14,10 +13,6 @@ const routes = [
       {
         path: '',
         component: Index
-      },
-      {
-        path: 'exam/:id',
-        component: ExamDetail
       }
     ]
   },
