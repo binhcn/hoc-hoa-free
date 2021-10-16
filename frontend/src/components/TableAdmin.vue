@@ -222,8 +222,9 @@
             </tr>
           </template>
         </tbody>
-      </table>
-      <!-- pagination -->
+      </table> 
+    </div>
+    <!-- pagination -->
       <!--  v-if="exercises && exercises.length > 0" -->
       <div class="mt-8">
          <a-pagination 
@@ -231,8 +232,6 @@
           :current="current" :total="exercises.length" @change="onChange"
         />
       </div>
-       
-    </div>
   </div>
 </template>
 <script>
@@ -546,7 +545,7 @@ export default {
   color: white;
 }
 .admin-course {
-  height: 350px;
+  height: 500px;
   overflow-y: auto;
   color: rgb(6, 21, 44);
   overflow-x: hidden;

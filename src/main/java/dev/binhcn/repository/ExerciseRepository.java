@@ -22,6 +22,12 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Long> {
       @Param("limit") int limit,
       @Param("offset") int offset);
 
+  @Query("SELECT * FROM exercise WHERE question LIKE CONCAT('%',:keyword,'%') ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
+  List<Exercise> findByKeyword(
+      @Param("keyword") String keyword,
+      @Param("limit") int limit,
+      @Param("offset") int offset);
+
   @Query("SELECT * FROM exercise ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
   List<Exercise> findAll(
       @Param("limit") int limit,

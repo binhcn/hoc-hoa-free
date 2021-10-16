@@ -374,7 +374,7 @@ export default {
       else this.getExams(topicId, current)
     },
     searchExercises() {
-      this.getExercises(this.selectedTopicId, this.selectedCateId, this.textSearch, 1)
+      this.getExercises("", "", this.textSearch, 1)
     },
     showSelectedClass(id) {
       let idx = this.listShow.findIndex((cat) => cat.categoryId === id);
@@ -385,6 +385,7 @@ export default {
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
       this.selectedCateId = cateId
+      this.getExercises("", cateId, "", 1)
       let params = {
           capbac: this.selectedCateId,
           chude: this.null

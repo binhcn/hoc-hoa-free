@@ -122,6 +122,9 @@ public class ExerciseController {
       int categoryId = Integer.parseInt(categoryIdString);
       exerciseList = exerciseRepository.findByCategoryId(categoryId, pageSize, offset);
       total = exerciseRepository.countByCategoryId(categoryId);
+    } else if(text.length() > 0) {
+      exerciseList = exerciseRepository.findByKeyword(text, pageSize, offset);
+      total = exerciseList.size();
     } else {
       exerciseList = exerciseRepository.findAll(pageSize, offset);
       total = exerciseRepository.count();
