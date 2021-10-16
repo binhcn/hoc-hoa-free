@@ -336,7 +336,9 @@ export default {
     },
     async getExercises(topicId, cateId, textSearch = "", currentPage = 1) {
       try {
-        this.selectedTopicId = topicId
+        // this.selectedTopicId = topicId
+        if(topicId == null) topicId = ''
+        if(cateId == null) cateId = ''
         textSearch = textSearch.trim()
         let data = await axios({
           url: `${DOMAIN}/exercises?topicId=${topicId}&categoryId=${cateId}&text=${textSearch}&currentPage=${currentPage}&pageSize=10`,
@@ -380,7 +382,6 @@ export default {
         this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
       } else {
         this.getExams(this.selectedTopicId, this.current)
-        console.log("get exam", this.exams)
       }
     },
   },

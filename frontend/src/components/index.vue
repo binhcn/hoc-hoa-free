@@ -119,8 +119,7 @@ export default {
       }
     },
     mounted() {
-      console.log("index exams", this.exams)
-        this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
+      this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
     },
     methods: {
       showListExam(id) {
