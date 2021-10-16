@@ -55,7 +55,7 @@
           <h1 class="pt-4 text-gray-700 text-xl font-bold uppercase tracking-wider">
           DANH SÁCH ĐỀ THI
           </h1>
-          <div class="flex justify-start" v-for="exam in exams" :key="exam.topicId">
+          <div class="flex justify-start" v-for="(exam, idx) in exams" :key="idx">
             <button class="text-blue-500 btn-exam" 
             @click="showListExam(exam.id)" v-html="exam.title"></button>
           </div>
@@ -94,7 +94,7 @@ export default {
         },
         selectedTopicId: {
             type: Number,
-            default: 1
+            default: 0
         },
         total: {
             type: Number,
@@ -119,6 +119,7 @@ export default {
       }
     },
     mounted() {
+      console.log("index exams", this.exams)
         this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
     },
     methods: {

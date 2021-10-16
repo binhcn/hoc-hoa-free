@@ -281,89 +281,10 @@ export default {
         {
           categoryId: 11,
           title: "LỚP 11",
-          topicList: [
-            {
-              id: 1,
-              title: "Este - Lipit",
-            },
-            {
-              id: 2,
-              title: "Cacbohidrat",
-            },
-            {
-              id: 3,
-              title: "Amin - Aminoaxit - Protein",
-            },
-            {
-              id: 4,
-              title: "Polime - Vật liệu Polime",
-            },
-            {
-              id: 5,
-              title: "Đại cương về kim loại",
-            },
-            {
-              id: 6,
-              title: "Polime - Vật liệu Polime",
-            },
-            {
-              id: 7,
-              title: "Polime - Vật liệu Polime",
-            },
-          ],
+          topicList: [],
         },
-        {
-          categoryId: 12,
-          title: "LỚP 12",
-          topicList: [
-            {
-              id: 1,
-              title: "Phản ứng oxi hóa khử",
-            },
-            {
-              id: 2,
-              title: "Nhóm halogen",
-            },
-            {
-              id: 3,
-              title: "Oxi - Lưu huỳnh",
-            },
-          ],
-        },
-        {
-          categoryId: 13,
-          title: "THPT",
-          topicList: [
-            {
-              id: 1,
-              title: "Đề thi thử 1",
-            },
-            {
-              id: 2,
-              title: "Đề thi thử 2",
-            },
-            {
-              id: 3,
-              title: "Đề thi thử 3",
-            },
-            {
-              id: 4,
-              title: "Đề thi thử 4",
-            },
-            {
-              id: 5,
-              title: "Đề thi thử 5",
-            },
-            {
-              id: 6,
-              title: "Đề thi thử 6",
-            },
-            {
-              id: 7,
-              title: "Đề thi thử 7",
-            },
-          ],
-        },
+        
+        
       ],
     };
   },
@@ -374,7 +295,7 @@ export default {
       else this.getExams(topicId, current)
     },
     searchExercises() {
-      this.getExercises("", "", this.textSearch, 1)
+      this.getExercises(null, null, this.textSearch, 1)
     },
     showSelectedClass(id) {
       let idx = this.listShow.findIndex((cat) => cat.categoryId === id);
@@ -385,7 +306,7 @@ export default {
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
       this.selectedCateId = cateId
-      this.getExercises("", cateId, "", 1)
+      this.getExercises(null, cateId, "", 1)
       let params = {
           capbac: this.selectedCateId,
           chude: this.null
@@ -459,6 +380,7 @@ export default {
         this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
       } else {
         this.getExams(this.selectedTopicId, this.current)
+        console.log("get exam", this.exams)
       }
     },
   },
