@@ -8,6 +8,7 @@
     
     <div class="my-8">
       <a
+      target="_blank"
       :href="`${FILE_DOMAIN}${examInfo.examFile}`"
       download
     >
@@ -21,6 +22,7 @@
     />
     <div class="my-8">
       <a
+      target="_blank"
       :href="`${FILE_DOMAIN}${examInfo.examFile}`"
       download
     >
