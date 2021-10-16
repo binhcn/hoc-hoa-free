@@ -57,7 +57,7 @@
           </h1>
           <div class="flex justify-start" v-for="(exam, idx) in exams" :key="idx">
             <button class="text-blue-500 btn-exam" 
-            @click="showListExam(exam.id)" v-html="exam.title"></button>
+            @click="showDetailExam(exam.id)" v-html="exam.title"></button>
           </div>
           <a-pagination 
           v-if="exams && exams.length > 0"
@@ -65,7 +65,7 @@
           />
         </template>
         <template v-else>
-          <ExamDetail :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :examId="examId"/>
+          <ExamDetail @changeTopicTHPT="changeTopicTHPT" :isTotalList="isTotalList" :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :examId="examId"/>
         </template>
         <!-- no exams -->
       </div>
@@ -122,7 +122,10 @@ export default {
       this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
     },
     methods: {
-      showListExam(id) {
+      changeTopicTHPT(isShowList) {
+        this.isTotalList = isShowList
+      },
+      showDetailExam(id) {
         this.examId = id
         this.isTotalList = false
       },
@@ -134,6 +137,7 @@ export default {
           : "Xem lời giải";
       },
       onChange(current) {
+        window.scrollTo(0,0);
         this.current = current;
         let payload = {
           current : current,

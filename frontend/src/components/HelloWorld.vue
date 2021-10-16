@@ -306,12 +306,17 @@ export default {
       this.listTopic = this.listShow[idx].topicList;
       this.showSelectedClass(cateId);
       this.selectedCateId = cateId
-      this.getExercises(null, cateId, "", 1)
+      this.selectedTopicId = null
       let params = {
           capbac: this.selectedCateId,
           chude: this.null
         }
       this.$router.push({ path: location.pathname, query: params })
+      if(this.selectedCateId !== 3) {
+        this.getExercises(null, cateId, "", 1)
+      } else {
+        this.getExams(this.selectedTopicId, 1)
+      }
     },
     toggleNotifications() {
       this.$refs.notifications.scrollTo(0, 0);
@@ -359,6 +364,7 @@ export default {
     },
     async getExams(id, currentPage = 1) {
       try {
+        if(id == null) id = ''
         let data = await axios({
           url: `${DOMAIN}/exams?topicId=${id}&currentPage=${currentPage}&pageSize=10`,
           method: 'GET'

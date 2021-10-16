@@ -57,6 +57,11 @@ export default {
   async mounted() {
     await this.getExam(this.examId);
   },
+  watch: {
+    selectedTopicId: function() {
+      if(this.selectedCateId == 3) this.$emit('changeTopicTHPT', true)
+    }
+  },
   methods: {
     async getExam(id) {
       try {
