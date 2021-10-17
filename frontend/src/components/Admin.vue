@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     onConfirm() {
-      if (this.authCode != "!@#admin$%^Tin&*(") {
+      if (this.authCode != "@thanhtin@17@3@1998@") {
         this.$router.push("/");
       } else {
         this.isShowTable = true;
