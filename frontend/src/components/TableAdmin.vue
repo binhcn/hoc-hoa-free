@@ -189,7 +189,7 @@
           <template v-if="exercises?.length > 0" >
             <template v-for="(exercise, idx) in exercises">
             <tr>
-            <td className="text-left">{{ idx + 1 }}</td>
+            <td className="text-left">{{ (current-1)*10 + idx + 1 }}</td>
             <td className="text-left">
               <div>
               <span :innerHTML="selectedInfo.cateId !== 3 ? exercise.question : exercise.title">
@@ -229,7 +229,7 @@
       <div class="mt-8">
          <a-pagination 
           v-if="exercises && exercises.length > 0"
-          :current="current" :total="exercises.length" @change="onChange"
+          :current="current" :total="total" @change="onChange"
         />
       </div>
   </div>
@@ -246,6 +246,7 @@ export default {
   },
   data() {
     return {
+      total: 0,
       DOMAIN: DOMAIN,
       FILE_DOMAIN: FILE_DOMAIN,
       titleExam: '',
@@ -268,88 +269,17 @@ export default {
         {
           categoryId: 11,
           title: "LỚP 11",
-          topics: [
-            {
-              topicId: 1,
-              title: "Este - Lipit",
-            },
-            {
-              topicId: 2,
-              title: "Cacbohidrat",
-            },
-            {
-              topicId: 3,
-              title: "Amin - Aminoaxit - Protein",
-            },
-            {
-              topicId: 4,
-              title: "Polime - Vật liệu Polime",
-            },
-            {
-              topicId: 5,
-              title: "Đại cương về kim loại",
-            },
-            {
-              topicId: 6,
-              title: "Polime - Vật liệu Polime",
-            },
-            {
-              topicId: 7,
-              title: "Polime - Vật liệu Polime",
-            },
-          ],
+          topics: [],
         },
         {
           categoryId: 12,
           title: "LỚP 12",
-          topics: [
-            {
-              topicId: 1,
-              title: "Phản ứng oxi hóa khử",
-            },
-            {
-              topicId: 2,
-              title: "Nhóm halogen",
-            },
-            {
-              topicId: 3,
-              title: "Oxi - Lưu huỳnh",
-            },
-          ],
+          topics: [],
         },
         {
           categoryId: 13,
           title: "THPT",
-          topics: [
-            {
-              topicId: 1,
-              title: "Đề thi thử 1",
-            },
-            {
-              topicId: 2,
-              title: "Đề thi thử 2",
-            },
-            {
-              topicId: 3,
-              title: "Đề thi thử 3",
-            },
-            {
-              topicId: 4,
-              title: "Đề thi thử 4",
-            },
-            {
-              topicId: 5,
-              title: "Đề thi thử 5",
-            },
-            {
-              topicId: 6,
-              title: "Đề thi thử 6",
-            },
-            {
-              topicId: 7,
-              title: "Đề thi thử 7",
-            },
-          ],
+          topics: [],
         },
       ],
     };
@@ -427,9 +357,11 @@ export default {
     },
     filterExam() {
       if(this.selectedInfo.cateId !== 3) {
-        this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+        this.current = 1
+        this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1);
       } else {
-        this.getExams(this.selectedInfo.topicId, this.current)
+        this.current = 1
+        this.getExams(this.selectedInfo.topicId, 1);
       } 
     },
     selectTopic(topicId) {
@@ -472,6 +404,7 @@ export default {
         });
         if (data && data.data.exerciseList) {
           this.exercises = data.data.exerciseList;
+          this.total = data.data.total
         }
       } catch (err) {
         console.log(err);
@@ -485,6 +418,7 @@ export default {
         })
         if(data && data.data && data.data.examList) {
           this.exercises = data.data.examList
+          this.total = data.data.total
         }
       } catch(err) {
         console.log("err", err)
@@ -508,7 +442,7 @@ export default {
               }
             }
           );
-          this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", this.current);
+          this.getExercises(this.selectedInfo.topicId, this.selectedInfo.cateId, "", 1);
         } else {
           formData.append('topicId', this.selectedInfo.topicId);
           formData.append('title', this.question);
@@ -523,7 +457,7 @@ export default {
               }
             }
           );
-          this.getExams(this.selectedInfo.topicId, this.current)
+          this.getExams(this.selectedInfo.topicId, 1)
         }
         
       } catch(err) {

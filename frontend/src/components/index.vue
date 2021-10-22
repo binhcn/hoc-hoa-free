@@ -80,6 +80,10 @@ export default {
       ExamDetail,
     },
     props: {
+        isSearch: {
+          type: Boolean,
+          default: false
+        },
         exams: {
             type: Array,
             default: []
@@ -99,7 +103,7 @@ export default {
         total: {
             type: Number,
             default: 1
-        }
+        },
     },
     data() {
         return {
@@ -115,13 +119,25 @@ export default {
     },
     watch: {
       selectedCateId: function() {
+        this.current = 1
         if(this.selectedCateId !== 3) this.isTotalList = true
+      },
+      selectedTopicId: function() {
+        this.current = 1
+      },
+      isSearch: function() {
+        if(this.isSearch) {
+          this.current = 1
+        }
       }
     },
     mounted() {
       this.toggleSolutionText = this.toggleSolutionText ? "Xem lời giải" : "Ẩn lời giải"
     },
     methods: {
+      setCurrentChange() {
+        this.current = 1
+      },
       changeTopicTHPT(isShowList) {
         this.isTotalList = isShowList
       },
@@ -142,7 +158,8 @@ export default {
         let payload = {
           current : current,
           topicId: this.selectedTopicId,
-          cateId: this.selectedCateId
+          cateId: this.selectedCateId,
+          isSearch: false,
       }
         this.$emit('getExer', payload)
       },

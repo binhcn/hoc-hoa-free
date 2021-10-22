@@ -252,7 +252,7 @@
         </div>
       </div>
     </aside>
-    <router-view @getExer="retrieveExercise" :exercises="exercises" :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :total="total" :exams="exams"></router-view>
+    <router-view :isSearch="searchStatus" @getExer="retrieveExercise" :exercises="exercises" :selectedCateId="selectedCateId" :selectedTopicId="selectedTopicId" :total="total" :exams="exams"></router-view>
   </div>
 </template>
 
@@ -266,6 +266,7 @@ export default {
   props: {},
   data() {
     return {
+      searchStatus: false,
       total: 0,
       exams: [],
       selectedCateId: 1,
@@ -290,11 +291,13 @@ export default {
   },
   methods: {
     retrieveExercise(payload) {
-      let {current, topicId, cateId} = payload
+      let {current, topicId, cateId, isSearch} = payload
+      this.searchStatus = isSearch
       if(cateId !== 3) this.getExercises(topicId, cateId, this.textSearch, current)
       else this.getExams(topicId, current)
     },
     searchExercises() {
+      this.searchStatus = true
       this.getExercises(null, null, this.textSearch, 1)
     },
     showSelectedClass(id) {
@@ -385,9 +388,9 @@ export default {
     getExercisesByTopic(id) {
       this.selectedTopicId = id
       if(this.selectedCateId !== 3) {
-        this.getExercises(id, this.selectedCateId, this.textSearch, this.current);
+        this.getExercises(id, this.selectedCateId, this.textSearch, 1);
       } else {
-        this.getExams(this.selectedTopicId, this.current)
+        this.getExams(this.selectedTopicId, 1)
       }
     },
   },
@@ -395,7 +398,7 @@ export default {
   async mounted() {
     await this.getData()
     this.selectedCateId = 1
-    this.selectedTopicId = 1
+    this.selectedTopicId = null
     await this.getExercises(this.selectedTopicId, this.selectedCateId,'', 1);
     this.showSelectedClass(1);
     this.listTopic = this.listShow[0].topicList;
