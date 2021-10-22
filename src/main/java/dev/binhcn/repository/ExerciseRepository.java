@@ -38,4 +38,7 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Long> {
   long countByTopicId(int topicId);
 
   long countByCategoryId(int categoryId);
+
+  @Query("SELECT count(id) FROM exercise WHERE question LIKE CONCAT('%',:keyword,'%')")
+  long countByKeyword(@Param("keyword") String keyword);
 }
