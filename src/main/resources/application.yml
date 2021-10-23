@@ -1,4 +1,11 @@
-server.port: 80
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: hochoafree_com.p12
+    key-store-password: hochoafree
+    key-alias: hochoafree
 spring:
   application:
     name: hoc-hoa-free
