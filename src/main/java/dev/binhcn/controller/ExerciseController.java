@@ -76,7 +76,7 @@ public class ExerciseController {
     CategoryAndTopicResponse response = new CategoryAndTopicResponse(categoryAndTopicList);
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH");
-    formatter.setTimeZone(TimeZone.getDefault());
+    formatter.setTimeZone(TimeZone.getTimeZone("GMT+7"));
     Date date = new Date();
     String key = formatter.format(date) + ":00";
     AtomicLong value = metricMap.get(key);
