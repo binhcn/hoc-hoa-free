@@ -5,6 +5,7 @@ import dev.binhcn.dto.CategoryAndTopic;
 import dev.binhcn.dto.CategoryAndTopicResponse;
 import dev.binhcn.dto.ExerciseHoaHocFreeResponse;
 import dev.binhcn.dto.ExerciseListResponse;
+import dev.binhcn.dto.MetricResponse;
 import dev.binhcn.model.Category;
 import dev.binhcn.model.Exercise;
 import dev.binhcn.model.Topic;
@@ -15,9 +16,14 @@ import dev.binhcn.service.AmazonClient;
 import dev.binhcn.statics.Constant;
 import dev.binhcn.util.ExerciseUtil;
 import dev.binhcn.util.FileUtil;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,6 +50,7 @@ public class ExerciseController {
   private final ExerciseRepository exerciseRepository;
   private final AmazonClient amazonClient;
   private final UploadFileConfig uploadFileConfig;
+  private final Map<String, AtomicLong> metricMap = new HashMap<>();
 
   @GetMapping("/structure")
   public ResponseEntity getCategoryAndTopic() {
@@ -66,6 +73,17 @@ public class ExerciseController {
       categoryAndTopicList.add(item);
     }
     CategoryAndTopicResponse response = new CategoryAndTopicResponse(categoryAndTopicList);
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH");
+    Date date = new Date();
+    String key = formatter.format(date) + ":00";
+    AtomicLong value = metricMap.get(key);
+    if (value == null) {
+      value = new AtomicLong(1);
+    } else {
+      value.getAndIncrement();
+    }
+    metricMap.put(key, value);
     return ResponseEntity.ok().body(response);
   }
 
@@ -152,6 +170,13 @@ public class ExerciseController {
   public ResponseEntity getExercise(@PathVariable("id") long id) {
     Exercise exercise = exerciseRepository.findById(id);
     ExerciseHoaHocFreeResponse response = ExerciseUtil.parseDetails(exercise);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/metrics")
+  public ResponseEntity collectMetrics() {
+    MetricResponse response = new MetricResponse();
+    response.setMetrics(metricMap);
     return ResponseEntity.ok(response);
   }
 }
