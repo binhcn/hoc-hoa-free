@@ -359,7 +359,7 @@ export default {
           }
           this.exercises = data.data.exerciseList;
           this.total = data.data.total
-          this.$router.push({ path: location.pathname, query: params })
+          this.$router.push({ path: location.pathname, query: (!params.capbac && !params.chude) ? null : params })
         }
       } catch (err) {
         console.log(err);
@@ -397,7 +397,7 @@ export default {
   created() {},
   async mounted() {
     await this.getData()
-    this.selectedCateId = 1
+    this.selectedCateId = null
     this.selectedTopicId = null
     await this.getExercises(this.selectedTopicId, this.selectedCateId,'', 1);
     this.showSelectedClass(1);
