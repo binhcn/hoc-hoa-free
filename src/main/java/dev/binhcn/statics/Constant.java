@@ -5,4 +5,5 @@ public class Constant {
   public static String IMAGE_DIR = "images/";
   public static String FILE_DIR = "files/";
   public static String SEPARATE = "/";
+  public static String DOMAIN = "https://hochoafree.com";
 }
